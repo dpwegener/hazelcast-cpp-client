@@ -29,12 +29,12 @@ namespace hazelcast {
                 const bool ListAddListenerCodec::RETRYABLE = false;
                 const ResponseMessageConst ListAddListenerCodec::RESPONSE_TYPE = (ResponseMessageConst) 104;
 
-                std::auto_ptr<ClientMessage> ListAddListenerCodec::encodeRequest(
+                std::unique_ptr<ClientMessage> ListAddListenerCodec::encodeRequest(
                         const std::string &name,
                         bool includeValue,
                         bool localOnly) {
                     int32_t requiredDataSize = calculateDataSize(name, includeValue, localOnly);
-                    std::auto_ptr<ClientMessage> clientMessage = ClientMessage::createForEncode(requiredDataSize);
+                    std::unique_ptr<ClientMessage> clientMessage = ClientMessage::createForEncode(requiredDataSize);
                     clientMessage->setMessageType((uint16_t) ListAddListenerCodec::REQUEST_TYPE);
                     clientMessage->setRetryable(RETRYABLE);
                     clientMessage->set(name);
@@ -73,18 +73,18 @@ namespace hazelcast {
                 }
 
                 void ListAddListenerCodec::AbstractEventHandler::handle(
-                        std::auto_ptr<protocol::ClientMessage> clientMessage) {
+                        std::unique_ptr<protocol::ClientMessage> clientMessage) {
                     int messageType = clientMessage->getMessageType();
                     switch (messageType) {
                         case protocol::EVENT_ITEM: {
-                            std::auto_ptr<serialization::pimpl::Data> item = clientMessage->getNullable<serialization::pimpl::Data>();
+                            std::unique_ptr<serialization::pimpl::Data> item = clientMessage->getNullable<serialization::pimpl::Data>();
 
                             std::string uuid = clientMessage->get<std::string>();
 
                             int32_t eventType = clientMessage->get<int32_t>();
 
 
-                            handleItemEventV10(item, uuid, eventType);
+                            handleItemEventV10(std::move(item), uuid, eventType);
                             break;
                         }
                         default:

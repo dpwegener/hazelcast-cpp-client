@@ -49,10 +49,10 @@ namespace hazelcast {
                      * @return the requested {@link EvictionPolicyEvaluator} implementation
                      */
                     template<typename MAPKEY, typename MAPVALUE, typename A, typename E>
-                    static std::auto_ptr<EvictionPolicyEvaluator<MAPKEY, MAPVALUE, A, E> > getEvictionPolicyEvaluator(
+                    static std::unique_ptr<EvictionPolicyEvaluator<MAPKEY, MAPVALUE, A, E> > getEvictionPolicyEvaluator(
                             const boost::shared_ptr<EvictionConfiguration<MAPKEY, MAPVALUE> > &evictionConfig) {
                         if (evictionConfig.get() == NULL) {
-                            return std::auto_ptr<EvictionPolicyEvaluator<MAPKEY, MAPVALUE, A, E> >();
+                            return std::unique_ptr<EvictionPolicyEvaluator<MAPKEY, MAPVALUE, A, E> >();
                         }
 
                         boost::shared_ptr<EvictionPolicyComparator<MAPKEY, MAPVALUE> > evictionPolicyComparator;
@@ -65,7 +65,7 @@ namespace hazelcast {
                             evictionPolicyComparator = createEvictionPolicyComparator<MAPKEY, MAPVALUE>(evictionPolicyType);
                         }
 
-                        return std::auto_ptr<EvictionPolicyEvaluator<MAPKEY, MAPVALUE, A, E> >(
+                        return std::unique_ptr<EvictionPolicyEvaluator<MAPKEY, MAPVALUE, A, E> >(
                                 new impl::evaluator::DefaultEvictionPolicyEvaluator<MAPKEY, MAPVALUE, A, E>(
                                         evictionPolicyComparator));
                     }

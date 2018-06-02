@@ -35,50 +35,50 @@ namespace hazelcast {
 
             int64_t Ringbuffer::capacity() {
                 if (-1 == bufferCapacity) {
-                    std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferCapacityCodec::encodeRequest(
+                    std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferCapacityCodec::encodeRequest(
                             getName());
                     bufferCapacity = invokeAndGetResult<int64_t, protocol::codec::RingbufferCapacityCodec::ResponseParameters>(
-                            msg, partitionId);
+                            std::move(msg), partitionId);
                 }
                 return bufferCapacity;
             }
 
             int64_t Ringbuffer::size() {
-                std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferSizeCodec::encodeRequest(
+                std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferSizeCodec::encodeRequest(
                         getName());
-                return invokeAndGetResult<int64_t, protocol::codec::RingbufferSizeCodec::ResponseParameters>(msg, partitionId);
+                return invokeAndGetResult<int64_t, protocol::codec::RingbufferSizeCodec::ResponseParameters>(std::move(msg), partitionId);
             }
 
             int64_t Ringbuffer::tailSequence() {
-                std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferTailSequenceCodec::encodeRequest(
+                std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferTailSequenceCodec::encodeRequest(
                         getName());
                 return invokeAndGetResult<int64_t, protocol::codec::RingbufferTailSequenceCodec::ResponseParameters>(
-                        msg, partitionId);
+                        std::move(msg), partitionId);
             }
 
             int64_t Ringbuffer::headSequence() {
-                std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferHeadSequenceCodec::encodeRequest(
+                std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferHeadSequenceCodec::encodeRequest(
                         getName());
                 return invokeAndGetResult<int64_t, protocol::codec::RingbufferHeadSequenceCodec::ResponseParameters>(
-                        msg, partitionId);
+                        std::move(msg), partitionId);
             }
 
             int64_t Ringbuffer::remainingCapacity() {
-                std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferRemainingCapacityCodec::encodeRequest(
+                std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferRemainingCapacityCodec::encodeRequest(
                         getName());
                 return invokeAndGetResult<int64_t, protocol::codec::RingbufferRemainingCapacityCodec::ResponseParameters>(
-                        msg, partitionId);
+                        std::move(msg), partitionId);
             }
 
             TypedData Ringbuffer::readOne(int64_t sequence) {
-                std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferReadOneCodec::encodeRequest(
+                std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferReadOneCodec::encodeRequest(
                         getName(), sequence);
 
-                std::auto_ptr<serialization::pimpl::Data> itemData = invokeAndGetResult<
-                        std::auto_ptr<serialization::pimpl::Data>, protocol::codec::RingbufferReadOneCodec::ResponseParameters>(
-                        msg, partitionId);
+                std::unique_ptr<serialization::pimpl::Data> itemData = invokeAndGetResult<
+                        std::unique_ptr<serialization::pimpl::Data>, protocol::codec::RingbufferReadOneCodec::ResponseParameters>(
+                        std::move(msg), partitionId);
 
-                return TypedData(itemData, context->getSerializationService());
+                return TypedData(std::move(itemData), context->getSerializationService());
             }
         }
     }

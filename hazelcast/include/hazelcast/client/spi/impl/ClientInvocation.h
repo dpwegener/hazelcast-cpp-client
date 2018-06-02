@@ -77,18 +77,18 @@ namespace hazelcast {
                     virtual ~ClientInvocation();
 
                     static boost::shared_ptr<ClientInvocation> create(spi::ClientContext &clientContext,
-                                                                      std::auto_ptr<protocol::ClientMessage> &clientMessage,
+                                                                      std::unique_ptr<protocol::ClientMessage> &clientMessage,
                                                                       const std::string &objectName, int partitionId);
 
 
                     static boost::shared_ptr<ClientInvocation> create(spi::ClientContext &clientContext,
-                                                                      std::auto_ptr<protocol::ClientMessage> &clientMessage,
+                                                                      std::unique_ptr<protocol::ClientMessage> &clientMessage,
                                                                       const std::string &objectName,
                                                                       const boost::shared_ptr<connection::Connection> &connection);
 
 
                     static boost::shared_ptr<ClientInvocation> create(spi::ClientContext &clientContext,
-                                                                      std::auto_ptr<protocol::ClientMessage> &clientMessage,
+                                                                      std::unique_ptr<protocol::ClientMessage> &clientMessage,
                                                                       const std::string &objectName);
 
                     boost::shared_ptr<ClientInvocationFuture> invoke();
@@ -144,16 +144,16 @@ namespace hazelcast {
                     };
 
                     ClientInvocation(spi::ClientContext &clientContext,
-                                     std::auto_ptr<protocol::ClientMessage> &clientMessage,
+                                     std::unique_ptr<protocol::ClientMessage> &clientMessage,
                                      const std::string &objectName, int partitionId);
 
                     ClientInvocation(spi::ClientContext &clientContext,
-                                     std::auto_ptr<protocol::ClientMessage> &clientMessage,
+                                     std::unique_ptr<protocol::ClientMessage> &clientMessage,
                                      const std::string &objectName,
                                      const boost::shared_ptr<connection::Connection> &connection);
 
                     ClientInvocation(spi::ClientContext &clientContext,
-                                     std::auto_ptr<protocol::ClientMessage> &clientMessage,
+                                     std::unique_ptr<protocol::ClientMessage> &clientMessage,
                                      const std::string &objectName);
 
                     static void invokeOnSelection(const boost::shared_ptr<ClientInvocation> &invocation);

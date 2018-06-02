@@ -76,12 +76,12 @@ namespace hazelcast {
                             }
                         protected:
                             //@Override
-                            std::auto_ptr<eviction::MaxSizeChecker> createNearCacheMaxSizeChecker(
+                            std::unique_ptr<eviction::MaxSizeChecker> createNearCacheMaxSizeChecker(
                                     const boost::shared_ptr<config::EvictionConfig<K, V> > &evictionConfig,
                                     const config::NearCacheConfig<K, V> &nearCacheConfig) {
                                 typename config::EvictionConfig<K, V>::MaxSizePolicy maxSizePolicy = evictionConfig->getMaximumSizePolicy();
                                 if (maxSizePolicy == config::EvictionConfig<K, V>::ENTRY_COUNT) {
-                                    return std::auto_ptr<eviction::MaxSizeChecker>(
+                                    return std::unique_ptr<eviction::MaxSizeChecker>(
                                             new maxsize::EntryCountNearCacheMaxSizeChecker<K, V, KS, R>(
                                                     evictionConfig->getSize(),
                                                     *ANCRS::records));
@@ -94,11 +94,11 @@ namespace hazelcast {
                             }
 
                             //@Override
-                            std::auto_ptr<HeapNearCacheRecordMap<K, V, KS, R> > createNearCacheRecordMap(
+                            std::unique_ptr<HeapNearCacheRecordMap<K, V, KS, R> > createNearCacheRecordMap(
                                     const config::NearCacheConfig<K, V> &nearCacheConfig) {
-                                return std::auto_ptr<HeapNearCacheRecordMap<K, V, KS, R> >(
-                                        new HeapNearCacheRecordMap<K, V, KS, R>(ANCRS::serializationService,
-                                                                                DEFAULT_INITIAL_CAPACITY));
+                                return std::make_unique<HeapNearCacheRecordMap<K, V, KS, R> >(
+                                        ANCRS::serializationService,
+                                                                                DEFAULT_INITIAL_CAPACITY);
                             }
 
                             //@Override

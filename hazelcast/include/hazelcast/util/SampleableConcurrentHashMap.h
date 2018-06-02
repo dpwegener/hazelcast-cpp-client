@@ -180,15 +180,15 @@ namespace hazelcast {
              */
             typedef typename SampleableConcurrentHashMap<K, V, KS, VS>::SamplingEntry E;
 
-            std::auto_ptr<util::Iterable<E> > getRandomSamples(int sampleCount) const {
+            std::unique_ptr<util::Iterable<E> > getRandomSamples(int sampleCount) const {
                 if (sampleCount < 0) {
                     throw client::exception::IllegalArgumentException("Sample count cannot be a negative value.");
                 }
                 if (sampleCount == 0 || SynchronizedMap<boost::shared_ptr<KS>, VS>::size() == 0) {
-                    return std::auto_ptr<util::Iterable<E> >();
+                    return std::unique_ptr<util::Iterable<E> >();
                 }
 
-                return std::auto_ptr<util::Iterable<E> >(new LazySamplingEntryIterableIterator(sampleCount, *this));
+                return std::unique_ptr<util::Iterable<E> >(new LazySamplingEntryIterableIterator(sampleCount, *this));
             }
 
         protected:

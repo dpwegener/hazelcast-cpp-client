@@ -29,7 +29,7 @@ namespace hazelcast {
         namespace spi {
             namespace impl {
                 ClientInvocation::ClientInvocation(spi::ClientContext &clientContext,
-                                                   std::auto_ptr<protocol::ClientMessage> &clientMessage,
+                                                   std::unique_ptr<protocol::ClientMessage> &clientMessage,
                                                    const std::string &objectName,
                                                    int partitionId) :
                         logger(util::ILogger::getLogger()),
@@ -37,7 +37,7 @@ namespace hazelcast {
                         clientClusterService(clientContext.getClientClusterService()),
                         invocationService(clientContext.getInvocationService()),
                         executionService(clientContext.getClientExecutionService()),
-                        clientMessage(clientMessage),
+                        clientMessage(std::move(clientMessage)),
                         callIdSequence(clientContext.getCallIdSequence()),
                         partitionId(partitionId),
                         startTimeMillis(util::currentTimeMillis()),
@@ -47,7 +47,7 @@ namespace hazelcast {
                 }
 
                 ClientInvocation::ClientInvocation(spi::ClientContext &clientContext,
-                                                   std::auto_ptr<protocol::ClientMessage> &clientMessage,
+                                                   std::unique_ptr<protocol::ClientMessage> &clientMessage,
                                                    const std::string &objectName,
                                                    const boost::shared_ptr<connection::Connection> &connection) :
                         logger(util::ILogger::getLogger()),
@@ -55,7 +55,7 @@ namespace hazelcast {
                         clientClusterService(clientContext.getClientClusterService()),
                         invocationService(clientContext.getInvocationService()),
                         executionService(clientContext.getClientExecutionService()),
-                        clientMessage(clientMessage),
+                        clientMessage(std::move(clientMessage)),
                         callIdSequence(clientContext.getCallIdSequence()),
                         partitionId(UNASSIGNED_PARTITION),
                         startTimeMillis(util::currentTimeMillis()),
@@ -66,14 +66,14 @@ namespace hazelcast {
                 }
 
                 ClientInvocation::ClientInvocation(spi::ClientContext &clientContext,
-                                                   std::auto_ptr<protocol::ClientMessage> &clientMessage,
+                                                   std::unique_ptr<protocol::ClientMessage> &clientMessage,
                                                    const std::string &objectName) :
                         logger(util::ILogger::getLogger()),
                         lifecycleService(clientContext.getLifecycleService()),
                         clientClusterService(clientContext.getClientClusterService()),
                         invocationService(clientContext.getInvocationService()),
                         executionService(clientContext.getClientExecutionService()),
-                        clientMessage(clientMessage),
+                        clientMessage(std::move(clientMessage)),
                         callIdSequence(clientContext.getCallIdSequence()),
                         partitionId(UNASSIGNED_PARTITION),
                         startTimeMillis(util::currentTimeMillis()),
@@ -243,7 +243,7 @@ namespace hazelcast {
                 }
 
                 boost::shared_ptr<ClientInvocation> ClientInvocation::create(spi::ClientContext &clientContext,
-                                                                             std::auto_ptr<protocol::ClientMessage> &clientMessage,
+                                                                             std::unique_ptr<protocol::ClientMessage> &clientMessage,
                                                                              const std::string &objectName,
                                                                              int partitionId) {
                     boost::shared_ptr<ClientInvocation> invocation = boost::shared_ptr<ClientInvocation>(
@@ -252,7 +252,7 @@ namespace hazelcast {
                 }
 
                 boost::shared_ptr<ClientInvocation> ClientInvocation::create(spi::ClientContext &clientContext,
-                                                                             std::auto_ptr<protocol::ClientMessage> &clientMessage,
+                                                                             std::unique_ptr<protocol::ClientMessage> &clientMessage,
                                                                              const std::string &objectName,
                                                                              const boost::shared_ptr<connection::Connection> &connection) {
                     boost::shared_ptr<ClientInvocation> invocation = boost::shared_ptr<ClientInvocation>(
@@ -261,7 +261,7 @@ namespace hazelcast {
                 }
 
                 boost::shared_ptr<ClientInvocation> ClientInvocation::create(spi::ClientContext &clientContext,
-                                                                             std::auto_ptr<protocol::ClientMessage> &clientMessage,
+                                                                             std::unique_ptr<protocol::ClientMessage> &clientMessage,
                                                                              const std::string &objectName) {
                     boost::shared_ptr<ClientInvocation> invocation = boost::shared_ptr<ClientInvocation>(
                             new ClientInvocation(clientContext, clientMessage, objectName));

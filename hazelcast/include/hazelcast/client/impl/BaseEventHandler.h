@@ -40,7 +40,7 @@ namespace hazelcast {
             public:
                 virtual ~BaseEventHandler();
                 
-                virtual void handle(std::auto_ptr<protocol::ClientMessage> message) = 0;
+                virtual void handle(std::unique_ptr<protocol::ClientMessage> message) = 0;
 
                 // TODO: Remove the above method after changing and regenerating the codecs
                 virtual void handle(const boost::shared_ptr<protocol::ClientMessage> &event);

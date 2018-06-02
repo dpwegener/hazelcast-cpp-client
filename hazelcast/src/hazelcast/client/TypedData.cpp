@@ -21,8 +21,8 @@ namespace hazelcast {
         TypedData::TypedData() : ss(NULL) {
         }
 
-        TypedData::TypedData(std::auto_ptr<serialization::pimpl::Data> data,
-                             serialization::pimpl::SerializationService &serializationService) : data(data),
+        TypedData::TypedData(std::unique_ptr<serialization::pimpl::Data> data,
+                             serialization::pimpl::SerializationService &serializationService) : data(std::move(data)),
                                                                                                  ss(&serializationService) {
         }
 

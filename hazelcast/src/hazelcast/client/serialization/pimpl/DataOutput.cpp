@@ -17,6 +17,8 @@
 // Created by sancar koyunlu on 8/7/13.
 
 #include "hazelcast/client/serialization/pimpl/DataOutput.h"
+
+#include <utility>
 #include "hazelcast/util/IOUtil.h"
 
 namespace hazelcast {
@@ -45,9 +47,9 @@ namespace hazelcast {
                     return *this;
                 }
 
-                std::auto_ptr<std::vector<byte> > DataOutput::toByteArray() {
-                    std::auto_ptr<std::vector<byte> > byteArrayPtr(new std::vector<byte>(*outputStream));
-                    return byteArrayPtr;
+                std::unique_ptr<std::vector<byte> > DataOutput::toByteArray() {
+                    std::unique_ptr<std::vector<byte> > byteArrayPtr(new std::vector<byte>(*outputStream));
+                    return (byteArrayPtr);
                 }
 
                 void DataOutput::write(const std::vector<byte>& bytes) {

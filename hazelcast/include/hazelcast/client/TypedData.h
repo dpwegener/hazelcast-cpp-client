@@ -41,7 +41,7 @@ namespace hazelcast {
         public:
             TypedData();
 
-            TypedData(std::auto_ptr<serialization::pimpl::Data> data,
+            TypedData(std::unique_ptr<serialization::pimpl::Data> data,
                       serialization::pimpl::SerializationService &serializationService);
 
             TypedData(const boost::shared_ptr<serialization::pimpl::Data> &data,

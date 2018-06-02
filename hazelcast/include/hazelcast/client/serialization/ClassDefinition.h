@@ -145,7 +145,7 @@ namespace hazelcast {
                 std::vector<FieldDefinition> fieldDefinitions;
                 std::map<std::string, FieldDefinition> fieldDefinitionsMap;
 
-                std::auto_ptr<std::vector<byte> > binary;
+                std::unique_ptr<std::vector<byte> > binary;
 
             };
         }

@@ -64,7 +64,7 @@ namespace hazelcast {
 
                     virtual void handleMemberAttributeChangeEventV10(const std::string &uuid, const std::string &key,
                                                              const int32_t &operationType,
-                                                             std::auto_ptr<std::string> value);
+                                                             std::unique_ptr<std::string> value);
 
                     void listenMembershipEvents(const boost::shared_ptr<ClientMembershipListener> &listener,
                                                        const boost::shared_ptr<connection::Connection> &ownerConnection);

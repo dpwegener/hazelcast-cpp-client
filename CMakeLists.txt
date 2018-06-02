@@ -15,7 +15,7 @@
 #
 cmake_minimum_required (VERSION 2.6.4)
 project (HazelcastClient)
-
+set (CMAKE_CXX_STANDARD 14)
 # FLAGS
 #  -DHZ_LIB_TYPE=[STATIC | SHARED]
 #  -DHZ_BIT=[32 | 64]

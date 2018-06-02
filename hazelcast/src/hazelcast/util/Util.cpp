@@ -144,7 +144,12 @@ namespace hazelcast {
             }
             return 0;
             #elif defined(__llvm__)
-                return ::strerror_r(errnum, strerrbuf + numChars, buflen - numChars);
+                char *errStr = ::strerror_r(errnum, strerrbuf + numChars, buflen - numChars);
+                int result = util::hz_snprintf(strerrbuf + numChars, buflen - numChars, "%s", errStr);
+                if (result < 0) {
+                    return result;
+                }
+                return 0;
             #elif defined(__GNUC__)
                 char *errStr = ::strerror_r(errnum, strerrbuf + numChars, buflen - numChars);
                 int result = util::hz_snprintf(strerrbuf + numChars, buflen - numChars, "%s", errStr);

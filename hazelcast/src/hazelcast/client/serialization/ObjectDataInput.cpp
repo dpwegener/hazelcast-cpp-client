@@ -74,7 +74,7 @@ namespace hazelcast {
                 return dataInput.readDouble();
             }
 
-            std::auto_ptr<std::string> ObjectDataInput::readUTF() {
+            std::unique_ptr<std::string> ObjectDataInput::readUTF() {
                 return dataInput.readUTF();
             }
 
@@ -90,50 +90,50 @@ namespace hazelcast {
                 dataInput.position(newPos);
             }
 
-            std::auto_ptr<std::vector<byte> > ObjectDataInput::readByteArray() {
+            std::unique_ptr<std::vector<byte> > ObjectDataInput::readByteArray() {
                 return dataInput.readByteArray();
             }
 
-            std::auto_ptr<std::vector<bool> > ObjectDataInput::readBooleanArray() {
+            std::unique_ptr<std::vector<bool> > ObjectDataInput::readBooleanArray() {
                 return dataInput.readBooleanArray();
             }
 
-            std::auto_ptr<std::vector<char> > ObjectDataInput::readCharArray() {
+            std::unique_ptr<std::vector<char> > ObjectDataInput::readCharArray() {
                 return dataInput.readCharArray();
             }
 
-            std::auto_ptr<std::vector<int32_t> > ObjectDataInput::readIntArray() {
+            std::unique_ptr<std::vector<int32_t> > ObjectDataInput::readIntArray() {
                 return dataInput.readIntArray();
             }
 
-            std::auto_ptr<std::vector<int64_t> > ObjectDataInput::readLongArray() {
+            std::unique_ptr<std::vector<int64_t> > ObjectDataInput::readLongArray() {
                 return dataInput.readLongArray();
             }
 
-            std::auto_ptr<std::vector<double> > ObjectDataInput::readDoubleArray() {
+            std::unique_ptr<std::vector<double> > ObjectDataInput::readDoubleArray() {
                 return dataInput.readDoubleArray();
             }
 
-            std::auto_ptr<std::vector<float> > ObjectDataInput::readFloatArray() {
+            std::unique_ptr<std::vector<float> > ObjectDataInput::readFloatArray() {
                 return dataInput.readFloatArray();
             }
 
-            std::auto_ptr<std::vector<int16_t> > ObjectDataInput::readShortArray() {
+            std::unique_ptr<std::vector<int16_t> > ObjectDataInput::readShortArray() {
                 return dataInput.readShortArray();
             }
 
-            std::auto_ptr<std::vector<std::string> > ObjectDataInput::readUTFArray() {
+            std::unique_ptr<std::vector<std::string> > ObjectDataInput::readUTFArray() {
                 return dataInput.readUTFArray();
             }
 
-            std::auto_ptr<std::vector<std::string *> > ObjectDataInput::readUTFPointerArray() {
+            std::unique_ptr<std::vector<std::string *> > ObjectDataInput::readUTFPointerArray() {
                 return dataInput.readUTFPointerArray();
             }
 
             template <>
             std::vector<std::string> *ObjectDataInput::getBackwardCompatiblePointer(void *actualData, 
                                                                                     const std::vector<std::string> *typePointer) const {
-                std::auto_ptr<std::vector<std::string> > result(new std::vector<std::string>());
+                std::unique_ptr<std::vector<std::string> > result(new std::vector<std::string>());
                 typedef std::vector<std::string *> STRING_PONTER_ARRAY;
                 std::vector<std::string *> *data = reinterpret_cast<std::vector<std::string *> *>(actualData);
                 // it is guaranteed that the data will not be null

@@ -174,7 +174,7 @@ namespace hazelcast {
                 void authenticate(const Address &target, boost::shared_ptr<Connection> &connection, bool asOwner,
                                   boost::shared_ptr<AuthenticationFuture> &future);
 
-                std::auto_ptr<protocol::ClientMessage>
+                std::unique_ptr<protocol::ClientMessage>
                 encodeAuthenticationRequest(bool asOwner, serialization::pimpl::SerializationService &ss,
                                             const protocol::Principal *principal);
 
@@ -197,7 +197,7 @@ namespace hazelcast {
 
                 std::set<Address> getPossibleMemberAddresses();
 
-                std::auto_ptr<ClientConnectionStrategy> initializeStrategy(spi::ClientContext &client);
+                std::unique_ptr<ClientConnectionStrategy> initializeStrategy(spi::ClientContext &client);
 
                 void startEventLoopGroup();
 
@@ -325,7 +325,7 @@ namespace hazelcast {
                 util::Atomic<boost::shared_ptr<Address> > previousOwnerConnectionAddress;
 
                 util::Atomic<boost::shared_ptr<protocol::Principal> > principal;
-                std::auto_ptr<ClientConnectionStrategy> connectionStrategy;
+                std::unique_ptr<ClientConnectionStrategy> connectionStrategy;
                 boost::shared_ptr<util::impl::SimpleExecutorService> clusterConnectionExecutor;
                 // This queue is used for avoiding memory leak
                 util::SynchronizedQueue<util::Thread> shutdownThreads;
@@ -338,7 +338,7 @@ namespace hazelcast {
                 internal::socket::SocketFactory socketFactory;
 
                 util::Mutex lock;
-                std::auto_ptr<HeartbeatManager> heartbeat;
+                std::unique_ptr<HeartbeatManager> heartbeat;
             };
         }
     }

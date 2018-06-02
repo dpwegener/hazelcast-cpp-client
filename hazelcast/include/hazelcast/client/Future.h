@@ -104,7 +104,7 @@ namespace hazelcast {
         template<typename V>
         class Future {
         public:
-            typedef std::auto_ptr<serialization::pimpl::Data> (*Decoder)(protocol::ClientMessage &response);
+            typedef std::unique_ptr<serialization::pimpl::Data> (*Decoder)(protocol::ClientMessage &response);
 
             /**
              * This constructor is only for internal use!!!!
@@ -170,7 +170,7 @@ namespace hazelcast {
 
                 clientInvocationFuture.reset();
 
-                std::auto_ptr<serialization::pimpl::Data> response = decoderFunction(*responseMsg);
+                std::unique_ptr<serialization::pimpl::Data> response = decoderFunction(*responseMsg);
 
                 std::auto_ptr<V> result = serializationService.toObject<V>(response.get());
 
@@ -229,7 +229,7 @@ namespace hazelcast {
         template<>
         class Future<TypedData> {
         public:
-            typedef std::auto_ptr<serialization::pimpl::Data> (*Decoder)(protocol::ClientMessage &response);
+            typedef std::unique_ptr<serialization::pimpl::Data> (*Decoder)(protocol::ClientMessage &response);
 
             /**
              * This constructor is only for internal use!!!!
@@ -295,9 +295,7 @@ namespace hazelcast {
 
                 clientInvocationFuture.reset();
 
-                std::auto_ptr<serialization::pimpl::Data> response = decoderFunction(*responseMsg);
-
-                return TypedData(response, serializationService);
+                return TypedData(decoderFunction(*responseMsg), serializationService);
             }
 
             /**

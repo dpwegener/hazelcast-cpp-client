@@ -40,63 +40,63 @@ namespace hazelcast {
 
             bool TransactionalMultiMapImpl::put(const serialization::pimpl::Data &key,
                                                 const serialization::pimpl::Data &value) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::TransactionalMultiMapPutCodec::encodeRequest(
                                 getName(), getTransactionId(), util::getCurrentThreadId(), key, value);
 
                 return invokeAndGetResult<bool, protocol::codec::TransactionalMultiMapPutCodec::ResponseParameters>(
-                        request);
+                        std::move(request));
             }
 
             std::vector<serialization::pimpl::Data> TransactionalMultiMapImpl::getData(
                     const serialization::pimpl::Data &key) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::TransactionalMultiMapGetCodec::encodeRequest(
                                 getName(), getTransactionId(), util::getCurrentThreadId(), key);
 
                 return invokeAndGetResult<std::vector<serialization::pimpl::Data>, protocol::codec::TransactionalMultiMapGetCodec::ResponseParameters>(
-                        request);
+                        std::move(request));
 
             }
 
             bool TransactionalMultiMapImpl::remove(const serialization::pimpl::Data &key,
                                                    const serialization::pimpl::Data &value) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::TransactionalMultiMapRemoveEntryCodec::encodeRequest(
                                 getName(), getTransactionId(), util::getCurrentThreadId(), key, value);
 
                 return invokeAndGetResult<bool, protocol::codec::TransactionalMultiMapRemoveEntryCodec::ResponseParameters>(
-                        request);
+                        std::move(request));
 
             }
 
             std::vector<serialization::pimpl::Data> TransactionalMultiMapImpl::removeData(
                     const serialization::pimpl::Data &key) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::TransactionalMultiMapRemoveCodec::encodeRequest(
                                 getName(), getTransactionId(), util::getCurrentThreadId(), key);
 
                 return invokeAndGetResult<std::vector<serialization::pimpl::Data>, protocol::codec::TransactionalMultiMapRemoveCodec::ResponseParameters>(
-                        request);
+                        std::move(request));
 
             }
 
             int TransactionalMultiMapImpl::valueCount(const serialization::pimpl::Data &key) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::TransactionalMultiMapValueCountCodec::encodeRequest(
                                 getName(), getTransactionId(), util::getCurrentThreadId(), key);
 
                 return invokeAndGetResult<int, protocol::codec::TransactionalMultiMapValueCountCodec::ResponseParameters>(
-                        request);
+                        std::move(request));
             }
 
             int TransactionalMultiMapImpl::size() {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::TransactionalMultiMapSizeCodec::encodeRequest(
                                 getName(), getTransactionId(), util::getCurrentThreadId());
 
                 return invokeAndGetResult<int, protocol::codec::TransactionalMultiMapSizeCodec::ResponseParameters>(
-                        request);
+                        std::move(request));
             }
 
         }

@@ -193,17 +193,17 @@ namespace hazelcast {
                 return internalMap.size();
             }
 
-            std::auto_ptr<std::pair<K, boost::shared_ptr<V> > > getEntry(size_t index) const {
+            std::unique_ptr<std::pair<K, boost::shared_ptr<V> > > getEntry(size_t index) const {
                 util::LockGuard lg(mapLock);
                 if (index < 0 || index >= internalMap.size()) {
-                    return std::auto_ptr<std::pair<K, boost::shared_ptr<V> > >();
+                    return std::unique_ptr<std::pair<K, boost::shared_ptr<V> > >();
                 }
                 typename std::map<K, boost::shared_ptr<V> >::const_iterator it = internalMap.begin();
                 for (size_t i = 0; i < index; ++i) {
                     ++it;
                 }
-                return std::auto_ptr<std::pair<K, boost::shared_ptr<V> > >(
-                        new std::pair<K, boost::shared_ptr<V> >(it->first, it->second));
+                return std::make_unique<std::pair<K, boost::shared_ptr<V> > >(
+                        it->first, it->second);
             }
         private:
             std::map<K, boost::shared_ptr<V>, Comparator> internalMap;

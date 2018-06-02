@@ -501,7 +501,7 @@ namespace hazelcast {
                 * @see EntryView
                 */
                 template <typename K>
-                std::auto_ptr<EntryView<TypedData, TypedData> > getEntryView(const K &key) {
+                std::unique_ptr<EntryView<TypedData, TypedData> > getEntryView(const K &key) {
                     return mapImpl->getEntryView<K>(key);
                 }
 

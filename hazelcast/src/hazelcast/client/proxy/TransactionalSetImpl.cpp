@@ -36,27 +36,27 @@ namespace hazelcast {
             }
 
             bool TransactionalSetImpl::add(const serialization::pimpl::Data& e) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::TransactionalSetAddCodec::encodeRequest(
                                 getName(), getTransactionId(), util::getCurrentThreadId(), e);
 
-                return invokeAndGetResult<bool, protocol::codec::TransactionalSetAddCodec::ResponseParameters>(request);
+                return invokeAndGetResult<bool, protocol::codec::TransactionalSetAddCodec::ResponseParameters>(std::move(request));
             }
 
             bool TransactionalSetImpl::remove(const serialization::pimpl::Data& e) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::TransactionalSetRemoveCodec::encodeRequest(
                                 getName(), getTransactionId(), util::getCurrentThreadId(), e);
 
-                return invokeAndGetResult<bool, protocol::codec::TransactionalSetRemoveCodec::ResponseParameters>(request);
+                return invokeAndGetResult<bool, protocol::codec::TransactionalSetRemoveCodec::ResponseParameters>(std::move(request));
             }
 
             int TransactionalSetImpl::size() {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::TransactionalSetSizeCodec::encodeRequest(
                                 getName(), getTransactionId(), util::getCurrentThreadId());
 
-                return invokeAndGetResult<int, protocol::codec::TransactionalSetSizeCodec::ResponseParameters>(request);
+                return invokeAndGetResult<int, protocol::codec::TransactionalSetSizeCodec::ResponseParameters>(std::move(request));
             }
         }
     }

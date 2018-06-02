@@ -102,7 +102,7 @@ namespace hazelcast {
                     shutdownLatch.await();
                     throw;
                 }
-                mixedTypeSupportAdaptor.reset(new mixedtype::impl::HazelcastClientImpl(*this));
+                mixedTypeSupportAdaptor = std::make_unique<mixedtype::impl::HazelcastClientImpl>(*this);
             }
 
             HazelcastClientInstanceImpl::~HazelcastClientInstanceImpl() {
@@ -203,23 +203,23 @@ namespace hazelcast {
                 }
             }
 
-            std::auto_ptr<spi::ClientInvocationService> HazelcastClientInstanceImpl::initInvocationService() {
+            std::unique_ptr<spi::ClientInvocationService> HazelcastClientInstanceImpl::initInvocationService() {
                 if (clientConfig.getNetworkConfig().isSmartRouting()) {
-                    return std::auto_ptr<spi::ClientInvocationService>(
+                    return std::unique_ptr<spi::ClientInvocationService>(
                             new spi::impl::SmartClientInvocationService(clientContext));
                 } else {
-                    return std::auto_ptr<spi::ClientInvocationService>(
+                    return std::unique_ptr<spi::ClientInvocationService>(
                             new spi::impl::NonSmartClientInvocationService(clientContext));
                 }
             }
 
-            std::auto_ptr<spi::impl::ClientExecutionServiceImpl> HazelcastClientInstanceImpl::initExecutionService() {
-                return std::auto_ptr<spi::impl::ClientExecutionServiceImpl>(
-                        new spi::impl::ClientExecutionServiceImpl(instanceName, clientProperties,
-                                                                  clientConfig.getExecutorPoolSize()));
+            std::unique_ptr<spi::impl::ClientExecutionServiceImpl> HazelcastClientInstanceImpl::initExecutionService() {
+                return std::make_unique<spi::impl::ClientExecutionServiceImpl>(
+                        instanceName, clientProperties,
+                                                                  clientConfig.getExecutorPoolSize());
             }
 
-            std::auto_ptr<connection::ClientConnectionManagerImpl>
+            std::unique_ptr<connection::ClientConnectionManagerImpl>
             HazelcastClientInstanceImpl::initConnectionManagerService(
                     const std::vector<boost::shared_ptr<connection::AddressProvider> > &addressProviders) {
                 config::ClientAwsConfig &awsConfig = clientConfig.getNetworkConfig().getAwsConfig();
@@ -234,9 +234,9 @@ namespace hazelcast {
                 } else {
                     addressTranslator.reset(new spi::impl::DefaultAddressTranslator());
                 }
-                return std::auto_ptr<connection::ClientConnectionManagerImpl>(
-                        new connection::ClientConnectionManagerImpl(
-                                clientContext, addressTranslator, addressProviders));
+                return std::make_unique<connection::ClientConnectionManagerImpl>(
+                        
+                                clientContext, addressTranslator, addressProviders);
 
             }
 

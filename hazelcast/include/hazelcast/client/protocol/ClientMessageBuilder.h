@@ -63,18 +63,18 @@ namespace hazelcast {
                 bool onData(util::ByteBuffer &buffer);
 
             private:
-                void addToPartialMessages(std::auto_ptr<ClientMessage> message);
+                void addToPartialMessages(std::unique_ptr<ClientMessage> message);
 
                 /**
                 * @returns true if message is completed, false otherwise
                 */
-                bool appendExistingPartialMessage(std::auto_ptr<ClientMessage> message);
+                bool appendExistingPartialMessage(std::unique_ptr<ClientMessage> message);
 
                 typedef std::map<int64_t, boost::shared_ptr<ClientMessage> > MessageMap;
 
                 MessageMap partialMessages;
 
-                std::auto_ptr<ClientMessage> message;
+                std::unique_ptr<ClientMessage> message;
                 connection::Connection &connection;
 
                 int32_t frameLen;

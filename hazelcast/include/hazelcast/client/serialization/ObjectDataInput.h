@@ -138,67 +138,67 @@ namespace hazelcast {
                 * @return the utf string read as an ascii string
                 * @throws IOException if it reaches end of file before finish reading
                 */
-                std::auto_ptr<std::string> readUTF();
+                std::unique_ptr<std::string> readUTF();
 
                 /**
                 * @return the byte array read
                 * @throws IOException if it reaches end of file before finish reading
                 */
-                std::auto_ptr<std::vector<byte> > readByteArray();
+                std::unique_ptr<std::vector<byte> > readByteArray();
 
                 /**
                 * @return the boolean array read
                 * @throws IOException if it reaches end of file before finish reading
                 */
-                std::auto_ptr<std::vector<bool> > readBooleanArray();
+                std::unique_ptr<std::vector<bool> > readBooleanArray();
 
                 /**
                 * @return the char array read
                 * @throws IOException if it reaches end of file before finish reading
                 */
-                std::auto_ptr<std::vector<char> > readCharArray();
+                std::unique_ptr<std::vector<char> > readCharArray();
 
                 /**
                 * @return the int32_t array read
                 * @throws IOException if it reaches end of file before finish reading
                 */
-                std::auto_ptr<std::vector<int32_t> > readIntArray();
+                std::unique_ptr<std::vector<int32_t> > readIntArray();
 
                 /**
                 * @return the int64_t array read
                 * @throws IOException if it reaches end of file before finish reading
                 */
-                std::auto_ptr<std::vector<int64_t> > readLongArray();
+                std::unique_ptr<std::vector<int64_t> > readLongArray();
 
                 /**
                 * @return the double array read
                 * @throws IOException if it reaches end of file before finish reading
                 */
-                std::auto_ptr<std::vector<double> > readDoubleArray();
+                std::unique_ptr<std::vector<double> > readDoubleArray();
 
                 /**
                 * @return the float array read
                 * @throws IOException if it reaches end of file before finish reading
                 */
-                std::auto_ptr<std::vector<float> > readFloatArray();
+                std::unique_ptr<std::vector<float> > readFloatArray();
 
                 /**
                 * @return the int16_t array read
                 * @throws IOException if it reaches end of file before finish reading
                 */
-                std::auto_ptr<std::vector<int16_t> > readShortArray();
+                std::unique_ptr<std::vector<int16_t> > readShortArray();
 
                 /**
                 * @return the array of strings
                 * @throws IOException if it reaches end of file before finish reading
                 */
-                std::auto_ptr<std::vector<std::string> > readUTFArray();
+                std::unique_ptr<std::vector<std::string> > readUTFArray();
 
                 /**
                 * @return the array of strings
                 * @throws IOException if it reaches end of file before finish reading
                 */
-                std::auto_ptr<std::vector<std::string *> > readUTFPointerArray();
+                std::unique_ptr<std::vector<std::string *> > readUTFPointerArray();
 
                 /**
                 * Object can be Portable, IdentifiedDataSerializable or custom serializable
@@ -207,13 +207,13 @@ namespace hazelcast {
                 * @throws IOException if it reaches end of file before finish reading
                 */
                 template<typename T>
-                std::auto_ptr<T> readObject() {
+                std::unique_ptr<T> readObject() {
                     int32_t typeId = readInt();
                     return readObject<T>(typeId);
                 }
 
                 template<typename T>
-                std::auto_ptr<T> readObject(int32_t typeId) {
+                std::unique_ptr<T> readObject(int32_t typeId) {
                     boost::shared_ptr<SerializerBase> serializer = serializerHolder.serializerFor(typeId);
                     if (NULL == serializer.get()) {
                         const std::string message = "No serializer found for serializerId :"+
@@ -236,7 +236,7 @@ namespace hazelcast {
                         }
                         default: {
                             boost::shared_ptr<StreamSerializer> streamSerializer = boost::static_pointer_cast<StreamSerializer>(serializer);
-                            return std::auto_ptr<T>(getBackwardCompatiblePointer<T>(streamSerializer->read(*this),
+                            return std::unique_ptr<T>(getBackwardCompatiblePointer<T>(streamSerializer->read(*this),
                                                                                     (T *) NULL));
                         }
                     }

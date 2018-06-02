@@ -21,6 +21,8 @@
 //  Copyright (c) 2013 sancar koyunlu. All rights reserved.
 //
 #include "hazelcast/client/serialization/pimpl/PortableSerializer.h"
+
+#include <utility>
 #include "hazelcast/client/serialization/pimpl/PortableContext.h"
 #include "hazelcast/client/serialization/pimpl/ClassDefinitionWriter.h"
 #include "hazelcast/client/serialization/pimpl/DefaultPortableWriter.h"
@@ -37,7 +39,7 @@ namespace hazelcast {
                 : context(portableContext) {
                 }
 
-                std::auto_ptr<Portable> PortableSerializer::read(ObjectDataInput &in, std::auto_ptr<Portable> portable,
+                std::unique_ptr<Portable> PortableSerializer::read(ObjectDataInput &in, std::unique_ptr<Portable> portable,
                                                                  int32_t factoryId, int32_t classId) {
                     int version = in.readInt();
 
@@ -46,7 +48,7 @@ namespace hazelcast {
                     PortableReader reader = createReader(in, factoryId, classId, version, portableVersion);
                     portable->readPortable(reader);
                     reader.end();
-                    return portable;
+                    return (portable);
                 }
 
                 PortableReader PortableSerializer::createReader(ObjectDataInput& input, int factoryId, int classId, int version, int portableVersion) const {
@@ -83,7 +85,7 @@ namespace hazelcast {
                     return currentVersion;
                 }
 
-                std::auto_ptr<Portable>
+                std::unique_ptr<Portable>
                 PortableSerializer::createNewPortableInstance(int32_t factoryId, int32_t classId) {
                     const std::map<int32_t, boost::shared_ptr<PortableFactory> > &portableFactories =
                             context.getSerializationConfig().getPortableFactories();
@@ -91,7 +93,7 @@ namespace hazelcast {
                             portableFactories.find(factoryId);
                     
                     if (portableFactories.end() == factoryIt) {
-                        return std::auto_ptr<Portable>();
+                        return std::unique_ptr<Portable>();
                     }
 
                     return factoryIt->second->create(classId);

@@ -57,7 +57,7 @@ namespace hazelcast {
                             }
 
                             //@Override
-                            std::auto_ptr<record::NearCacheObjectRecord<V> > valueToRecord(
+                            std::unique_ptr<record::NearCacheObjectRecord<V> > valueToRecord(
                                     const boost::shared_ptr<serialization::pimpl::Data> &valueData) {
                                 boost::shared_ptr<serialization::pimpl::Data> data = boost::const_pointer_cast<serialization::pimpl::Data>(
                                         valueData);
@@ -66,7 +66,7 @@ namespace hazelcast {
                             }
 
                             //@Override
-                            std::auto_ptr<record::NearCacheObjectRecord<V> > valueToRecord(
+                            std::unique_ptr<record::NearCacheObjectRecord<V> > valueToRecord(
                                     const boost::shared_ptr<V> &value) {
                                 return valueToRecordInternal(value);
                             }
@@ -87,18 +87,18 @@ namespace hazelcast {
                             }
 
                         private:
-                            std::auto_ptr<record::NearCacheObjectRecord<V> > valueToRecordInternal(
+                            std::unique_ptr<record::NearCacheObjectRecord<V> > valueToRecordInternal(
                                     const boost::shared_ptr<V> &value) {
                                 int64_t creationTime = util::currentTimeMillis();
                                 if (ANCRS::timeToLiveMillis > 0) {
-                                    return std::auto_ptr<record::NearCacheObjectRecord<V> >(
-                                            new record::NearCacheObjectRecord<V>(value, creationTime,
+                                    return std::make_unique<record::NearCacheObjectRecord<V> >(
+                                            value, creationTime,
                                                                                  creationTime +
-                                                                                 ANCRS::timeToLiveMillis));
+                                                                                 ANCRS::timeToLiveMillis);
                                 } else {
-                                    return std::auto_ptr<record::NearCacheObjectRecord<V> >(
-                                            new record::NearCacheObjectRecord<V>(value, creationTime,
-                                                                                 NearCacheRecord<V>::TIME_NOT_SET));
+                                    return std::make_unique<record::NearCacheObjectRecord<V> >(
+                                            value, creationTime,
+                                                                                 NearCacheRecord<V>::TIME_NOT_SET);
                                 }
                             }
                         };

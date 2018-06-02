@@ -101,7 +101,7 @@ namespace hazelcast {
                     if (ownerConnection->getConnectedServerVersion() >=
                         client::impl::BuildInfo::calculateVersion("3.9")) {
                         //Servers after 3.9 supports listeners
-                        std::auto_ptr<protocol::ClientMessage> clientMessage =
+                        std::unique_ptr<protocol::ClientMessage> clientMessage =
                                 protocol::codec::ClientAddPartitionListenerCodec::encodeRequest();
                         boost::shared_ptr<ClientInvocation> invocation = ClientInvocation::create(client, clientMessage,
                                                                                                   "", ownerConnection);
@@ -162,7 +162,7 @@ namespace hazelcast {
                                     "ClientPartitionServiceImpl::waitForPartitionsFetchedOnce",
                                     "Partitions can't be assigned since all nodes in the cluster are lite members");
                         }
-                        std::auto_ptr<protocol::ClientMessage> requestMessage = protocol::codec::ClientGetPartitionsCodec::encodeRequest();
+                        std::unique_ptr<protocol::ClientMessage> requestMessage = protocol::codec::ClientGetPartitionsCodec::encodeRequest();
                         boost::shared_ptr<ClientInvocation> invocation = ClientInvocation::create(client,
                                                                                                   requestMessage, "");
                         boost::shared_ptr<ClientInvocationFuture> future = invocation->invokeUrgent();
@@ -202,7 +202,7 @@ namespace hazelcast {
                         if (!connection.get()) {
                             return;
                         }
-                        std::auto_ptr<protocol::ClientMessage> requestMessage = protocol::codec::ClientGetPartitionsCodec::encodeRequest();
+                        std::unique_ptr<protocol::ClientMessage> requestMessage = protocol::codec::ClientGetPartitionsCodec::encodeRequest();
                         boost::shared_ptr<ClientInvocation> invocation = ClientInvocation::create(client,
                                                                                                   requestMessage, "");
                         boost::shared_ptr<ClientInvocationFuture> future = invocation->invokeUrgent();

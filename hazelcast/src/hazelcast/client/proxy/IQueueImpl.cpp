@@ -60,137 +60,137 @@ namespace hazelcast {
             }
 
             bool IQueueImpl::offer(const serialization::pimpl::Data &element, long timeoutInMillis) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueOfferCodec::encodeRequest(getName(), element,
                                                                                     timeoutInMillis);
 
-                return invokeAndGetResult<bool, protocol::codec::QueueOfferCodec::ResponseParameters>(request,
+                return invokeAndGetResult<bool, protocol::codec::QueueOfferCodec::ResponseParameters>(std::move(request),
                                                                                                       partitionId);
             }
 
             void IQueueImpl::put(const serialization::pimpl::Data &element) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueuePutCodec::encodeRequest(getName(), element);
 
-                invokeOnPartition(request, partitionId);
+                invokeOnPartition(std::move(request), partitionId);
             }
 
-            std::auto_ptr<serialization::pimpl::Data> IQueueImpl::pollData(long timeoutInMillis) {
-                std::auto_ptr<protocol::ClientMessage> request =
+            std::unique_ptr<serialization::pimpl::Data> IQueueImpl::pollData(long timeoutInMillis) {
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueuePollCodec::encodeRequest(getName(), timeoutInMillis);
 
-                return invokeAndGetResult<std::auto_ptr<serialization::pimpl::Data>, protocol::codec::QueuePollCodec::ResponseParameters>(
-                        request, partitionId);
+                return invokeAndGetResult<std::unique_ptr<serialization::pimpl::Data>, protocol::codec::QueuePollCodec::ResponseParameters>(
+                        std::move(request), partitionId);
             }
 
             int IQueueImpl::remainingCapacity() {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueRemainingCapacityCodec::encodeRequest(getName());
 
                 return invokeAndGetResult<int, protocol::codec::QueueRemainingCapacityCodec::ResponseParameters>(
-                        request, partitionId);
+                        std::move(request), partitionId);
             }
 
             bool IQueueImpl::remove(const serialization::pimpl::Data &element) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueRemoveCodec::encodeRequest(getName(), element);
 
-                return invokeAndGetResult<bool, protocol::codec::QueueRemoveCodec::ResponseParameters>(request,
+                return invokeAndGetResult<bool, protocol::codec::QueueRemoveCodec::ResponseParameters>(std::move(request),
                                                                                                        partitionId);
             }
 
             bool IQueueImpl::contains(const serialization::pimpl::Data &element) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueContainsCodec::encodeRequest(getName(), element);
 
-                return invokeAndGetResult<bool, protocol::codec::QueueContainsCodec::ResponseParameters>(request, partitionId);
+                return invokeAndGetResult<bool, protocol::codec::QueueContainsCodec::ResponseParameters>(std::move(request), partitionId);
             }
 
             std::vector<serialization::pimpl::Data> IQueueImpl::drainToData(size_t maxElements) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueDrainToMaxSizeCodec::encodeRequest(getName(), maxElements);
 
                 return invokeAndGetResult<std::vector<serialization::pimpl::Data>, protocol::codec::QueueDrainToMaxSizeCodec::ResponseParameters>(
-                        request, partitionId);
+                        std::move(request), partitionId);
             }
 
             std::vector<serialization::pimpl::Data> IQueueImpl::drainToData() {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueDrainToCodec::encodeRequest(getName());
 
                 return invokeAndGetResult<std::vector<serialization::pimpl::Data>, protocol::codec::QueueDrainToMaxSizeCodec::ResponseParameters>(
-                        request, partitionId);
+                        std::move(request), partitionId);
             }
 
-            std::auto_ptr<serialization::pimpl::Data> IQueueImpl::peekData() {
-                std::auto_ptr<protocol::ClientMessage> request =
+            std::unique_ptr<serialization::pimpl::Data> IQueueImpl::peekData() {
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueuePeekCodec::encodeRequest(getName());
 
-                return invokeAndGetResult<std::auto_ptr<serialization::pimpl::Data>, protocol::codec::QueuePeekCodec::ResponseParameters>(
-                        request, partitionId);
+                return invokeAndGetResult<std::unique_ptr<serialization::pimpl::Data>, protocol::codec::QueuePeekCodec::ResponseParameters>(
+                        std::move(request), partitionId);
             }
 
             int IQueueImpl::size() {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueSizeCodec::encodeRequest(getName());
 
-                return invokeAndGetResult<int, protocol::codec::QueueSizeCodec::ResponseParameters>(request,
+                return invokeAndGetResult<int, protocol::codec::QueueSizeCodec::ResponseParameters>(std::move(request),
                                                                                                     partitionId);
             }
 
             bool IQueueImpl::isEmpty() {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueIsEmptyCodec::encodeRequest(getName());
 
-                return invokeAndGetResult<bool, protocol::codec::QueueIsEmptyCodec::ResponseParameters>(request,
+                return invokeAndGetResult<bool, protocol::codec::QueueIsEmptyCodec::ResponseParameters>(std::move(request),
                                                                                                     partitionId);
             }
 
             std::vector<serialization::pimpl::Data> IQueueImpl::toArrayData() {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueIteratorCodec::encodeRequest(getName());
 
                 return invokeAndGetResult<std::vector<serialization::pimpl::Data>, protocol::codec::QueueIteratorCodec::ResponseParameters>(
-                        request, partitionId);
+                        std::move(request), partitionId);
             }
 
             bool IQueueImpl::containsAll(const std::vector<serialization::pimpl::Data> &elements) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueContainsAllCodec::encodeRequest(getName(), elements);
 
-                return invokeAndGetResult<bool, protocol::codec::QueueContainsAllCodec::ResponseParameters>(request,
+                return invokeAndGetResult<bool, protocol::codec::QueueContainsAllCodec::ResponseParameters>(std::move(request),
                                                                                                             partitionId);
             }
 
             bool IQueueImpl::addAll(const std::vector<serialization::pimpl::Data> &elements) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueAddAllCodec::encodeRequest(getName(), elements);
 
-                return invokeAndGetResult<bool, protocol::codec::QueueAddAllCodec::ResponseParameters>(request,
+                return invokeAndGetResult<bool, protocol::codec::QueueAddAllCodec::ResponseParameters>(std::move(request),
                                                                                                        partitionId);
             }
 
             bool IQueueImpl::removeAll(const std::vector<serialization::pimpl::Data> &elements) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueCompareAndRemoveAllCodec::encodeRequest(getName(), elements);
 
                 return invokeAndGetResult<bool, protocol::codec::QueueCompareAndRemoveAllCodec::ResponseParameters>(
-                        request, partitionId);
+                        std::move(request), partitionId);
             }
 
             bool IQueueImpl::retainAll(const std::vector<serialization::pimpl::Data> &elements) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueCompareAndRetainAllCodec::encodeRequest(getName(), elements);
 
                 return invokeAndGetResult<bool, protocol::codec::QueueCompareAndRetainAllCodec::ResponseParameters>(
-                        request, partitionId);
+                        std::move(request), partitionId);
             }
 
             void IQueueImpl::clear() {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::QueueClearCodec::encodeRequest(getName());
 
-                invokeOnPartition(request, partitionId);
+                invokeOnPartition(std::move(request), partitionId);
             }
 
             boost::shared_ptr<spi::impl::ListenerMessageCodec>
@@ -204,7 +204,7 @@ namespace hazelcast {
                                                                                                includeValue(
                                                                                                        includeValue) {}
 
-            std::auto_ptr<protocol::ClientMessage>
+            std::unique_ptr<protocol::ClientMessage>
             IQueueImpl::QueueListenerMessageCodec::encodeAddRequest(bool localOnly) const {
                 return protocol::codec::QueueAddListenerCodec::encodeRequest(name, includeValue, localOnly);
             }
@@ -214,7 +214,7 @@ namespace hazelcast {
                 return protocol::codec::QueueAddListenerCodec::ResponseParameters::decode(responseMessage).response;
             }
 
-            std::auto_ptr<protocol::ClientMessage>
+            std::unique_ptr<protocol::ClientMessage>
             IQueueImpl::QueueListenerMessageCodec::encodeRemoveRequest(const std::string &realRegistrationId) const {
                 return protocol::codec::QueueRemoveListenerCodec::encodeRequest(name, realRegistrationId);
             }

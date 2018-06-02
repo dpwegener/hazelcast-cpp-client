@@ -93,7 +93,7 @@ namespace hazelcast {
 
                         const boost::shared_ptr<EventHandler<protocol::ClientMessage> > &handler = registrationKey.getHandler();
                         handler->beforeListenerRegister();
-                        std::auto_ptr<protocol::ClientMessage> request = registrationKey.getCodec()->encodeAddRequest(
+                        std::unique_ptr<protocol::ClientMessage> request = registrationKey.getCodec()->encodeAddRequest(
                                 false);
                         boost::shared_ptr<ClientInvocation> invocation = ClientInvocation::create(clientContext,
                                                                                                   request, "");
@@ -140,7 +140,7 @@ namespace hazelcast {
                             return true;
                         }
 
-                        std::auto_ptr<protocol::ClientMessage> request = registration->getCodec()->encodeRemoveRequest(
+                        std::unique_ptr<protocol::ClientMessage> request = registration->getCodec()->encodeRemoveRequest(
                                 registration->getServerRegistrationId());
                         try {
                             boost::shared_ptr<ClientInvocation> invocation = ClientInvocation::create(clientContext,

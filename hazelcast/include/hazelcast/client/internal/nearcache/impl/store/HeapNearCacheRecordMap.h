@@ -134,14 +134,14 @@ namespace hazelcast {
                             }
 
                             //@Override
-                            std::auto_ptr<util::Iterable<eviction::EvictionCandidate<K, V, KS, R> > > sample(
+                            std::unique_ptr<util::Iterable<eviction::EvictionCandidate<K, V, KS, R> > > sample(
                                     int32_t sampleCount) const {
-                                std::auto_ptr<util::Iterable<typename util::SampleableConcurrentHashMap<K, V, KS, R>::E> > samples = util::SampleableConcurrentHashMap<K, V, KS, R>::getRandomSamples(
+                                std::unique_ptr<util::Iterable<typename util::SampleableConcurrentHashMap<K, V, KS, R>::E> > samples = util::SampleableConcurrentHashMap<K, V, KS, R>::getRandomSamples(
                                         sampleCount);
                                 if (NULL == samples.get()) {
-                                    return std::auto_ptr<util::Iterable<eviction::EvictionCandidate<K, V, KS, R> > >();
+                                    return std::unique_ptr<util::Iterable<eviction::EvictionCandidate<K, V, KS, R> > >();
                                 }
-                                return std::auto_ptr<util::Iterable<eviction::EvictionCandidate<K, V, KS, R> > >(
+                                return std::unique_ptr<util::Iterable<eviction::EvictionCandidate<K, V, KS, R> > >(
                                         new EvictionCandidateAdapter(samples));
                             }
 
@@ -149,9 +149,9 @@ namespace hazelcast {
                                     : public util::Iterable<eviction::EvictionCandidate<K, V, KS, R> > {
                             public:
                                 EvictionCandidateAdapter(
-                                        std::auto_ptr<util::Iterable<typename util::SampleableConcurrentHashMap<K, V, KS, R>::E> > &samplesIterable)
-                                        : adaptedIterable(samplesIterable) {
-                                    adaptedIterator = std::auto_ptr<util::Iterator<eviction::EvictionCandidate<K, V, KS, R> > >(
+                                        std::unique_ptr<util::Iterable<typename util::SampleableConcurrentHashMap<K, V, KS, R>::E> > &samplesIterable)
+                                        : adaptedIterable(std::move(samplesIterable)) {
+                                    adaptedIterator = std::unique_ptr<util::Iterator<eviction::EvictionCandidate<K, V, KS, R> > >(
                                             new EvictionCandidateIterator(*adaptedIterable->iterator()));
                                 }
 
@@ -189,8 +189,8 @@ namespace hazelcast {
                                 }
 
                             private:
-                                std::auto_ptr<util::Iterable<typename util::SampleableConcurrentHashMap<K, V, KS, R>::E> > adaptedIterable;
-                                std::auto_ptr<util::Iterator<eviction::EvictionCandidate<K, V, KS, R> > > adaptedIterator;
+                                std::unique_ptr<util::Iterable<typename util::SampleableConcurrentHashMap<K, V, KS, R>::E> > adaptedIterable;
+                                std::unique_ptr<util::Iterator<eviction::EvictionCandidate<K, V, KS, R> > > adaptedIterator;
                             };
 
                         protected:

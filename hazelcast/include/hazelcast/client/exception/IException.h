@@ -84,7 +84,7 @@ namespace hazelcast {
                  * Exception throwing internals works by making a temporary copy of the exception.
                  * @return The copy of this exception
                  */
-                virtual std::auto_ptr<IException> clone() const;
+                virtual std::unique_ptr<IException> clone() const;
 
                 const std::string &getDetails() const;
 

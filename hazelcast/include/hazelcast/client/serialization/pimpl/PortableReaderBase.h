@@ -62,23 +62,23 @@ namespace hazelcast {
 
                     virtual int16_t readShort(const char *fieldName);
 
-                    virtual std::auto_ptr<std::string> readUTF(const char *fieldName);
+                    virtual std::unique_ptr<std::string> readUTF(const char *fieldName);
 
-                    virtual std::auto_ptr<std::vector<byte> > readByteArray(const char *fieldName);
+                    virtual std::unique_ptr<std::vector<byte> > readByteArray(const char *fieldName);
 
-                    virtual std::auto_ptr<std::vector<bool> > readBooleanArray(const char *fieldName);
+                    virtual std::unique_ptr<std::vector<bool> > readBooleanArray(const char *fieldName);
 
-                    virtual std::auto_ptr<std::vector<char> > readCharArray(const char *fieldName);
+                    virtual std::unique_ptr<std::vector<char> > readCharArray(const char *fieldName);
 
-                    virtual std::auto_ptr<std::vector<int32_t> > readIntArray(const char *fieldName);
+                    virtual std::unique_ptr<std::vector<int32_t> > readIntArray(const char *fieldName);
 
-                    virtual std::auto_ptr<std::vector<int64_t> > readLongArray(const char *fieldName);
+                    virtual std::unique_ptr<std::vector<int64_t> > readLongArray(const char *fieldName);
 
-                    virtual std::auto_ptr<std::vector<double> > readDoubleArray(const char *fieldName);
+                    virtual std::unique_ptr<std::vector<double> > readDoubleArray(const char *fieldName);
 
-                    virtual std::auto_ptr<std::vector<float> > readFloatArray(const char *fieldName);
+                    virtual std::unique_ptr<std::vector<float> > readFloatArray(const char *fieldName);
 
-                    virtual std::auto_ptr<std::vector<int16_t> > readShortArray(const char *fieldName);
+                    virtual std::unique_ptr<std::vector<int16_t> > readShortArray(const char *fieldName);
 
                     ObjectDataInput &getRawDataInput();
 

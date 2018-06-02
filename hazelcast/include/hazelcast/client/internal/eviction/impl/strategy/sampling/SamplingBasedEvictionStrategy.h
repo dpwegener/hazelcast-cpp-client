@@ -56,8 +56,8 @@ namespace hazelcast {
                                 int evictInternal(S *sampleableEvictableStore,
                                                   EvictionPolicyEvaluator<MAPKEY, MAPVALUE, A, E> *evictionPolicyEvaluator,
                                                   EvictionListener<A, E> *evictionListener) {
-                                    std::auto_ptr<util::Iterable<EvictionCandidate<MAPKEY, MAPVALUE, A, E> > > samples = sampleableEvictableStore->sample(SAMPLE_COUNT);
-                                    std::auto_ptr<std::vector<boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > > > evictionCandidates =
+                                    std::unique_ptr<util::Iterable<EvictionCandidate<MAPKEY, MAPVALUE, A, E> > > samples = sampleableEvictableStore->sample(SAMPLE_COUNT);
+                                    std::unique_ptr<std::vector<boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > > > evictionCandidates =
                                             evictionPolicyEvaluator->evaluate(*samples);
                                     return sampleableEvictableStore->evict(evictionCandidates.get(), evictionListener);
                                 }

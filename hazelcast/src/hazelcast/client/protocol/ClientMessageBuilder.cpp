@@ -49,15 +49,15 @@ namespace hazelcast {
                         if (message->isFlagSet(ClientMessage::BEGIN_AND_END_FLAGS)) {
                             //MESSAGE IS COMPLETE HERE
                             connection.handleClientMessage(connection.shared_from_this(),
-                                                           boost::shared_ptr<ClientMessage>(message));
+                                                           boost::shared_ptr<ClientMessage>(std::move(message)));
                             isCompleted = true;
                         } else {
                             if (message->isFlagSet(ClientMessage::BEGIN_FLAG)) {
                                 // put the message into the partial messages list
-                                addToPartialMessages(message);
+                                addToPartialMessages(std::move(message));
                             } else if (message->isFlagSet(ClientMessage::END_FLAG)) {
                                 // This is the intermediate frame. Append at the previous message buffer
-                                appendExistingPartialMessage(message);
+                                appendExistingPartialMessage(std::move(message));
                                 isCompleted = true;
                             }
                         }
@@ -67,12 +67,12 @@ namespace hazelcast {
                 return isCompleted;
             }
 
-            void ClientMessageBuilder::addToPartialMessages(std::auto_ptr<ClientMessage> message) {
+            void ClientMessageBuilder::addToPartialMessages(std::unique_ptr<ClientMessage> message) {
                 int64_t id = message->getCorrelationId();
-                partialMessages[id] = message;
+                partialMessages[id] = std::move(message);
             }
 
-            bool ClientMessageBuilder::appendExistingPartialMessage(std::auto_ptr<ClientMessage> message) {
+            bool ClientMessageBuilder::appendExistingPartialMessage(std::unique_ptr<ClientMessage> message) {
                 bool result = false;
 
                 MessageMap::iterator foundItemIter = partialMessages.find(message->getCorrelationId());

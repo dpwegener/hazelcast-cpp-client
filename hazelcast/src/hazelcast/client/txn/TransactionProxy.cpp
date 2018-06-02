@@ -78,11 +78,11 @@ namespace hazelcast {
                     }
                     TRANSACTION_EXISTS = true;
                     startTime = util::currentTimeMillis();
-                    std::auto_ptr<protocol::ClientMessage> request = protocol::codec::TransactionCreateCodec::encodeRequest(
+                    std::unique_ptr<protocol::ClientMessage> request = protocol::codec::TransactionCreateCodec::encodeRequest(
                             options.getTimeout() * MILLISECOND_IN_A_SECOND, options.getDurability(),
                             options.getTransactionType(), threadId);
 
-                    boost::shared_ptr<protocol::ClientMessage> response = invoke(request);
+                    boost::shared_ptr<protocol::ClientMessage> response = invoke(std::move(request));
 
                     protocol::codec::TransactionCreateCodec::ResponseParameters result =
                             protocol::codec::TransactionCreateCodec::ResponseParameters::decode(*response);
@@ -104,10 +104,10 @@ namespace hazelcast {
                     checkThread();
                     checkTimeout();
 
-                    std::auto_ptr<protocol::ClientMessage> request =
+                    std::unique_ptr<protocol::ClientMessage> request =
                             protocol::codec::TransactionCommitCodec::encodeRequest(txnId, threadId);
 
-                    invoke(request);
+                    invoke(std::move(request));
 
                     state = TxnState::COMMITTED;
                 } catch (exception::IException &) {
@@ -126,10 +126,10 @@ namespace hazelcast {
                     state = TxnState::ROLLING_BACK;
                     checkThread();
                     try {
-                        std::auto_ptr<protocol::ClientMessage> request =
+                        std::unique_ptr<protocol::ClientMessage> request =
                                 protocol::codec::TransactionRollbackCodec::encodeRequest(txnId, threadId);
 
-                        invoke(request);
+                        invoke(std::move(request));
                     } catch (exception::IException &exception) {
                         util::ILogger::getLogger().warning()
                                 << "Exception while rolling back the transaction. Exception:" << exception;
@@ -187,7 +187,7 @@ namespace hazelcast {
             }
 
             boost::shared_ptr<protocol::ClientMessage> TransactionProxy::invoke(
-                    std::auto_ptr<protocol::ClientMessage> request) {
+                    std::unique_ptr<protocol::ClientMessage> request) {
                 return ClientTransactionUtil::invoke(request, getTxnId(), clientContext, connection);
             }
 

@@ -227,7 +227,7 @@ namespace hazelcast {
                 return connectedServerVersion;
             }
 
-            std::auto_ptr<Address> Connection::getLocalSocketAddress() const {
+            std::unique_ptr<Address> Connection::getLocalSocketAddress() const {
                 return socket->localSocketAddress();
             }
 

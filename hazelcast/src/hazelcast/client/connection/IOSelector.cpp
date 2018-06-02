@@ -81,7 +81,7 @@ namespace hazelcast {
                 else
                     localAddress = "::1";
 
-                wakeUpSocket.reset(new internal::socket::TcpSocket(Address(localAddress, p)));
+                wakeUpSocket = std::make_unique<internal::socket::TcpSocket>(Address(localAddress, p));
                 int error = wakeUpSocket->connect(5000);
                 if (error == 0) {
                     sleepingSocket.reset(serverSocket.accept());

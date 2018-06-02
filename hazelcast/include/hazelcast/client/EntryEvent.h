@@ -407,8 +407,8 @@ namespace hazelcast {
                 EntryEventType eventType;
                 TypedData key;
                 TypedData value;
-                std::auto_ptr<TypedData> oldValue;
-                std::auto_ptr<TypedData> mergingValue;
+                std::unique_ptr<TypedData> oldValue;
+                std::unique_ptr<TypedData> mergingValue;
             };
         }
     }

@@ -52,7 +52,7 @@ namespace hazelcast {
                 /****************  RingBuffer<E> interface implementation starts here *********************************/
                 int64_t capacity() {
                     if (-1 == bufferCapacity) {
-                        std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferCapacityCodec::encodeRequest(
+                        std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferCapacityCodec::encodeRequest(
                                 getName());
                         bufferCapacity = invokeAndGetResult<int64_t, protocol::codec::RingbufferCapacityCodec::ResponseParameters>(
                                 msg, partitionId);
@@ -61,27 +61,27 @@ namespace hazelcast {
                 }
 
                 int64_t size() {
-                    std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferSizeCodec::encodeRequest(
+                    std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferSizeCodec::encodeRequest(
                             getName());
                     return invokeAndGetResult<int64_t, protocol::codec::RingbufferSizeCodec::ResponseParameters>(msg, partitionId);
                 }
 
                 int64_t tailSequence() {
-                    std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferTailSequenceCodec::encodeRequest(
+                    std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferTailSequenceCodec::encodeRequest(
                             getName());
                     return invokeAndGetResult<int64_t, protocol::codec::RingbufferTailSequenceCodec::ResponseParameters>(
                             msg, partitionId);
                 }
 
                 int64_t headSequence() {
-                    std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferHeadSequenceCodec::encodeRequest(
+                    std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferHeadSequenceCodec::encodeRequest(
                             getName());
                     return invokeAndGetResult<int64_t, protocol::codec::RingbufferHeadSequenceCodec::ResponseParameters>(
                             msg, partitionId);
                 }
 
                 int64_t remainingCapacity() {
-                    std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferRemainingCapacityCodec::encodeRequest(
+                    std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferRemainingCapacityCodec::encodeRequest(
                             getName());
                     return invokeAndGetResult<int64_t, protocol::codec::RingbufferRemainingCapacityCodec::ResponseParameters>(
                             msg, partitionId);
@@ -89,17 +89,17 @@ namespace hazelcast {
 
                 int64_t add(const E &item) {
                     serialization::pimpl::Data itemData = toData<E>(item);
-                    std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferAddCodec::encodeRequest(
+                    std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferAddCodec::encodeRequest(
                             getName(), OVERWRITE, itemData);
                     return invokeAndGetResult<int64_t, protocol::codec::RingbufferAddCodec::ResponseParameters>(msg, partitionId);
                 }
 
-                std::auto_ptr<E> readOne(int64_t sequence) {
-                    std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferReadOneCodec::encodeRequest(
+                std::unique_ptr<E> readOne(int64_t sequence) {
+                    std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferReadOneCodec::encodeRequest(
                             getName(), sequence);
 
-                    std::auto_ptr<serialization::pimpl::Data> itemData = invokeAndGetResult<
-                            std::auto_ptr<serialization::pimpl::Data>, protocol::codec::RingbufferReadOneCodec::ResponseParameters>(
+                    std::unique_ptr<serialization::pimpl::Data> itemData = invokeAndGetResult<
+                            std::unique_ptr<serialization::pimpl::Data>, protocol::codec::RingbufferReadOneCodec::ResponseParameters>(
                             msg, partitionId);
 
                     return toObject<E>(itemData);
@@ -107,17 +107,17 @@ namespace hazelcast {
 
                 boost::shared_ptr<spi::impl::ClientInvocationFuture>
                 readManyAsync(int64_t sequence, int32_t maxCount, time_t timeoutSeconds) {
-                    std::auto_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferReadManyCodec::encodeRequest(
+                    std::unique_ptr<protocol::ClientMessage> msg = protocol::codec::RingbufferReadManyCodec::encodeRequest(
                             getName(), sequence, 1, maxCount, (const serialization::pimpl::Data *)NULL);
 
-                    return invokeAndGetFuture(msg, partitionId);
+                    return invokeAndGetFuture(std::move(msg), partitionId);
                 }
 
-                std::auto_ptr<DataArray<E> > getReadManyAsyncResponseObject(
+                std::unique_ptr<DataArray<E> > getReadManyAsyncResponseObject(
                         boost::shared_ptr<protocol::ClientMessage> responseMsg) {
                     protocol::codec::RingbufferReadManyCodec::ResponseParameters responseParameters =
                             protocol::codec::RingbufferReadManyCodec::ResponseParameters::decode(*responseMsg);
-                    return std::auto_ptr<DataArray<E> >(new impl::DataArrayImpl<E>(responseParameters.items,
+                    return std::unique_ptr<DataArray<E> >(new impl::DataArrayImpl<E>(responseParameters.items,
                                                                             context->getSerializationService()));
                 }
 

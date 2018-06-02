@@ -138,7 +138,7 @@ namespace hazelcast {
                 onComplete();
             }
 
-            void set_exception(std::auto_ptr<client::exception::IException> exception) {
+            void set_exception(std::unique_ptr<client::exception::IException> exception) {
                 LockGuard guard(mutex);
                 if (cancelled) {
                     return;
@@ -150,7 +150,7 @@ namespace hazelcast {
                     return;
                 }
 
-                this->exception = exception;
+                this->exception = std::move(exception);
                 exceptionReady = true;
                 conditionVariable.notify_all();
                 for (typename std::vector<CallbackInfo>::const_iterator it = callbacks.begin();

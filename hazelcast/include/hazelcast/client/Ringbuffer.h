@@ -170,7 +170,7 @@ namespace hazelcast {
              * @throws java.lang.IllegalArgumentException if sequence is smaller than 0 or larger than {@link #tailSequence()}+1.
              * @throws InterruptedException               if the call is interrupted while blocking.
              */
-            virtual std::auto_ptr<E> readOne(int64_t sequence) = 0;
+            virtual std::unique_ptr<E> readOne(int64_t sequence) = 0;
         };
     }
 }

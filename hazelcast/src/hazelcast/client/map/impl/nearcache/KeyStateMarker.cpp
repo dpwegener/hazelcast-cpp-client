@@ -42,7 +42,7 @@ namespace hazelcast {
                     void TrueMarkerImpl::init() {
                     }
 
-                    const std::auto_ptr<KeyStateMarker> KeyStateMarker::TRUE_MARKER =
+                    const std::unique_ptr<KeyStateMarker> KeyStateMarker::TRUE_MARKER =
                             std::auto_ptr<KeyStateMarker>(new TrueMarkerImpl());
                 }
             }

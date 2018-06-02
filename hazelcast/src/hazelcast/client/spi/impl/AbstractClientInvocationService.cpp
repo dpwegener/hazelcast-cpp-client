@@ -194,20 +194,20 @@ namespace hazelcast {
 
                 void AbstractClientInvocationService::CleanResourcesTask::notifyException(ClientInvocation &invocation,
                                                                                           boost::shared_ptr<connection::Connection> &connection) {
-                    std::auto_ptr<exception::IException> ex;
+                    std::unique_ptr<exception::IException> ex;
                     /**
                      * Connection may be closed(e.g. remote member shutdown) in which case the isAlive is set to false or the
                      * heartbeat failure occurs. The order of the following check matters. We need to first check for isAlive since
                      * the connection.isHeartBeating also checks for isAlive as well.
                      */
                     if (!connection->isAlive()) {
-                        ex.reset(new exception::TargetDisconnectedException("CleanResourcesTask::notifyException",
-                                                                            connection->getCloseReason()));
+                        ex = std::make_unique<exception::TargetDisconnectedException>("CleanResourcesTask::notifyException",
+                                                                            connection->getCloseReason());
                     } else {
                         std::ostringstream out;
                         out << "Heartbeat timed out to " << connection;
-                        ex.reset(new exception::TargetDisconnectedException("CleanResourcesTask::notifyException",
-                                                                            out.str()));
+                        ex = std::make_unique<exception::TargetDisconnectedException>("CleanResourcesTask::notifyException",
+                                                                            out.str());
                     }
 
                     invocation.notifyException(*ex);
@@ -302,7 +302,7 @@ namespace hazelcast {
                         return;
                     }
                     if (protocol::codec::ErrorCodec::TYPE == clientMessage->getMessageType()) {
-                        std::auto_ptr<exception::IException> exception = client.getClientExceptionFactory().createException(
+                        std::unique_ptr<exception::IException> exception = client.getClientExceptionFactory().createException(
                                 "AbstractClientInvocationService::ResponseThread::handleClientMessage", *clientMessage);
                         future->notifyException(*exception);
                     } else {

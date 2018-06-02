@@ -65,7 +65,7 @@ namespace hazelcast {
                 }
 */
 
-                Data::Data(std::auto_ptr<std::vector<byte> > buffer) : data(buffer), cachedHashValue(-1) {
+                Data::Data(std::unique_ptr<std::vector<byte> > buffer) : data(std::move(buffer)), cachedHashValue(-1) {
                     if (data.get()) {
                         size_t size = data->size();
                         if (size > 0 && size < Data::DATA_OVERHEAD) {

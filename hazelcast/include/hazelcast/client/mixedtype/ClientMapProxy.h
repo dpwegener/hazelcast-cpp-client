@@ -146,8 +146,8 @@ namespace hazelcast {
                 TypedData remove(const K &key) {
                     serialization::pimpl::Data keyData = toData(key);
 
-                    std::auto_ptr<serialization::pimpl::Data> response = removeInternal(keyData);
-                    return TypedData(response, context->getSerializationService());
+                    std::unique_ptr<serialization::pimpl::Data> response = removeInternal(keyData);
+                    return TypedData(std::move(response), context->getSerializationService());
                 }
 
                 /**
@@ -275,9 +275,9 @@ namespace hazelcast {
                     serialization::pimpl::Data keyData = toData(key);
                     serialization::pimpl::Data valueData = toData(value);
 
-                    std::auto_ptr<serialization::pimpl::Data> response = putIfAbsentInternal(keyData, valueData,
+                    std::unique_ptr<serialization::pimpl::Data> response = putIfAbsentInternal(keyData, valueData,
                                                                                              ttlInMillis);
-                    return TypedData(response, context->getSerializationService());
+                    return TypedData(std::move(response), context->getSerializationService());
                 }
 
                 /**
@@ -565,17 +565,16 @@ namespace hazelcast {
                 * @see EntryView
                 */
                 template<typename K>
-                std::auto_ptr<EntryView<TypedData, TypedData> > getEntryView(const K &key) {
-                    std::auto_ptr<serialization::pimpl::Data> keyData(new serialization::pimpl::Data(toData(key)));
-                    std::auto_ptr<map::DataEntryView> dataEntryView = proxy::IMapImpl::getEntryViewData(*keyData);
+                std::unique_ptr<EntryView<TypedData, TypedData> > getEntryView(const K &key) {
+                    std::unique_ptr<serialization::pimpl::Data> keyData(new serialization::pimpl::Data(toData(key)));
+                    std::unique_ptr<map::DataEntryView> dataEntryView = proxy::IMapImpl::getEntryViewData(*keyData);
                     if ((map::DataEntryView *) NULL == dataEntryView.get()) {
-                        return std::auto_ptr<EntryView<TypedData, TypedData> >();
+                        return std::unique_ptr<EntryView<TypedData, TypedData> >();
                     }
-                    TypedData value(std::auto_ptr<serialization::pimpl::Data>(
-                            new serialization::pimpl::Data(dataEntryView->getValue())),
+                    TypedData value(std::make_unique<serialization::pimpl::Data>(dataEntryView->getValue()),
                                     context->getSerializationService());
-                    const TypedData &keyTypedData = TypedData(keyData, context->getSerializationService());
-                    std::auto_ptr<EntryView<TypedData, TypedData> > view(new EntryView<TypedData, TypedData>(
+                    const TypedData &keyTypedData = TypedData(std::move(keyData), context->getSerializationService());
+                    std::unique_ptr<EntryView<TypedData, TypedData> > view(new EntryView<TypedData, TypedData>(
                             keyTypedData, value, *dataEntryView));
                     return view;
                 }
@@ -885,9 +884,9 @@ namespace hazelcast {
                     serialization::pimpl::Data keyData = toData(key);
                     serialization::pimpl::Data processorData = toData(entryProcessor);
 
-                    std::auto_ptr<serialization::pimpl::Data> response = executeOnKeyInternal(keyData, processorData);
+                    std::unique_ptr<serialization::pimpl::Data> response = executeOnKeyInternal(keyData, processorData);
 
-                    return TypedData(response, getSerializationService());
+                    return TypedData(std::move(response), getSerializationService());
                 }
 
                 template<typename K, typename EntryProcessor>
@@ -906,8 +905,8 @@ namespace hazelcast {
                     serialization::pimpl::SerializationService &serializationService = getSerializationService();
                     for (size_t i = 0; i < entries.size(); ++i) {
                         std::auto_ptr<K> keyObj = toObject<K>(entries[i].first);
-                        result[*keyObj] = TypedData(std::auto_ptr<serialization::pimpl::Data>(
-                                new serialization::pimpl::Data(entries[i].second)), serializationService);
+                        result[*keyObj] = TypedData(std::make_unique<serialization::pimpl::Data>(
+                                (entries[i].second)), serializationService);
                     }
                     return result;
                 }
@@ -929,12 +928,12 @@ namespace hazelcast {
                     EntryVector entries = proxy::IMapImpl::executeOnEntriesData<EntryProcessor>(entryProcessor);
                     std::map<TypedData, TypedData> result;
                     for (size_t i = 0; i < entries.size(); ++i) {
-                        std::auto_ptr<serialization::pimpl::Data> keyData(
+                        std::unique_ptr<serialization::pimpl::Data> keyData(
                                 new serialization::pimpl::Data(entries[i].first));
-                        std::auto_ptr<serialization::pimpl::Data> valueData(
+                        std::unique_ptr<serialization::pimpl::Data> valueData(
                                 new serialization::pimpl::Data(entries[i].second));
                         serialization::pimpl::SerializationService &serializationService = context->getSerializationService();
-                        result[TypedData(keyData, serializationService)] = TypedData(valueData, serializationService);
+                        result[TypedData(std::move(keyData), serializationService)] = TypedData(std::move(valueData), serializationService);
                     }
                     return result;
                 }
@@ -960,12 +959,12 @@ namespace hazelcast {
                                                                                                 predicate);
                     std::map<TypedData, TypedData> result;
                     for (size_t i = 0; i < entries.size(); ++i) {
-                        std::auto_ptr<serialization::pimpl::Data> keyData(
+                        std::unique_ptr<serialization::pimpl::Data> keyData(
                                 new serialization::pimpl::Data(entries[i].first));
-                        std::auto_ptr<serialization::pimpl::Data> valueData(
+                        std::unique_ptr<serialization::pimpl::Data> valueData(
                                 new serialization::pimpl::Data(entries[i].second));
                         serialization::pimpl::SerializationService &serializationService = context->getSerializationService();
-                        result[TypedData(keyData, serializationService)] = TypedData(valueData, serializationService);
+                        result[TypedData(std::move(keyData), serializationService)] = TypedData(std::move(valueData), serializationService);
                     }
                     return result;
                 }
@@ -1028,7 +1027,7 @@ namespace hazelcast {
 
                 virtual bool containsKeyInternal(const serialization::pimpl::Data &keyData);
 
-                virtual std::auto_ptr<serialization::pimpl::Data> removeInternal(
+                virtual std::unique_ptr<serialization::pimpl::Data> removeInternal(
                         const serialization::pimpl::Data &keyData);
 
                 virtual bool removeInternal(
@@ -1043,14 +1042,14 @@ namespace hazelcast {
                 virtual bool tryPutInternal(const serialization::pimpl::Data &keyData,
                                             const serialization::pimpl::Data &valueData, long timeoutInMillis);
 
-                virtual std::auto_ptr<serialization::pimpl::Data> putInternal(const serialization::pimpl::Data &keyData,
+                virtual std::unique_ptr<serialization::pimpl::Data> putInternal(const serialization::pimpl::Data &keyData,
                                                                               const serialization::pimpl::Data &valueData,
                                                                               long timeoutInMillis);
 
                 virtual void tryPutTransientInternal(const serialization::pimpl::Data &keyData,
                                                      const serialization::pimpl::Data &valueData, int ttlInMillis);
 
-                virtual std::auto_ptr<serialization::pimpl::Data>
+                virtual std::unique_ptr<serialization::pimpl::Data>
                 putIfAbsentInternal(const serialization::pimpl::Data &keyData,
                                     const serialization::pimpl::Data &valueData,
                                     int ttlInMillis);
@@ -1059,7 +1058,7 @@ namespace hazelcast {
                                                    const serialization::pimpl::Data &valueData,
                                                    const serialization::pimpl::Data &newValueData);
 
-                virtual std::auto_ptr<serialization::pimpl::Data>
+                virtual std::unique_ptr<serialization::pimpl::Data>
                 replaceInternal(const serialization::pimpl::Data &keyData,
                                 const serialization::pimpl::Data &valueData);
 
@@ -1082,7 +1081,7 @@ namespace hazelcast {
                     return proxy::IMapImpl::getAllData(datas);
                 }
 
-                virtual std::auto_ptr<serialization::pimpl::Data>
+                virtual std::unique_ptr<serialization::pimpl::Data>
                 executeOnKeyInternal(const serialization::pimpl::Data &keyData,
                                      const serialization::pimpl::Data &processor);
 
@@ -1092,20 +1091,20 @@ namespace hazelcast {
                                     const serialization::pimpl::Data &processor) {
                     int partitionId = getPartitionId(keyData);
 
-                    std::auto_ptr<protocol::ClientMessage> request =
+                    std::unique_ptr<protocol::ClientMessage> request =
                             protocol::codec::MapSubmitToKeyCodec::encodeRequest(getName(),
                                                                                             processor,
                                                                                             keyData,
                                                                                 util::getCurrentThreadId());
 
                     boost::shared_ptr<spi::impl::ClientInvocationFuture> clientInvocationFuture = invokeAndGetFuture(
-                            request, partitionId);
+                            std::move(request), partitionId);
 
                     return client::Future<ResultType>(clientInvocationFuture, getSerializationService(),
                                                       submitToKeyDecoder);
                 }
 
-                static std::auto_ptr<serialization::pimpl::Data> submitToKeyDecoder(protocol::ClientMessage &response);
+                static std::unique_ptr<serialization::pimpl::Data> submitToKeyDecoder(protocol::ClientMessage &response);
 
                 template<typename K, typename EntryProcessor>
                 EntryVector executeOnKeysInternal(const std::set<K> &keys, const EntryProcessor &entryProcessor) {

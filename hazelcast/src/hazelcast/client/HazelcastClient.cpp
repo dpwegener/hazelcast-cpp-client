@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 #include "hazelcast/client/HazelcastClient.h"
+
+#include <utility>
 #include "hazelcast/client/IdGenerator.h"
 #include "hazelcast/client/IAtomicLong.h"
 #include "hazelcast/client/ICountDownLatch.h"

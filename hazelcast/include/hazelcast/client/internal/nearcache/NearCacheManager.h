@@ -148,9 +148,9 @@ namespace hazelcast {
                     }
                 protected:
                     template<typename K, typename V, typename KS>
-                    std::auto_ptr<NearCache<KS, V> > createNearCache(
+                    std::unique_ptr<NearCache<KS, V> > createNearCache(
                             const std::string &name, const config::NearCacheConfig<K, V> &nearCacheConfig) {
-                        return std::auto_ptr<NearCache<KS, V> >(
+                        return std::unique_ptr<NearCache<KS, V> >(
                                 new impl::DefaultNearCache<K, V, KS>(
                                         name, nearCacheConfig, serializationService));
                     }

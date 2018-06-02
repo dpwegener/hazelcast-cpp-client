@@ -117,17 +117,17 @@ namespace hazelcast {
                     }
 
                     template<typename T>
-                    inline std::auto_ptr<T> toObject(const Data *data) {
+                    inline std::unique_ptr<T> toObject(const Data *data) {
                         if (NULL == data) {
-                            return std::auto_ptr<T>();
+                            return std::unique_ptr<T>();
                         }
                         return toObject<T>(*data);
                     }
 
                     template<typename T>
-                    inline std::auto_ptr<T> toObject(const Data &data) {
+                    inline std::unique_ptr<T> toObject(const Data &data) {
                         if (isNullData(data)) {
-                            return std::auto_ptr<T>();
+                            return std::unique_ptr<T>();
                         }
 
                         int32_t typeId = data.getType();

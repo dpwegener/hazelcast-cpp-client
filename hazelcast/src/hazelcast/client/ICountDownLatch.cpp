@@ -33,31 +33,31 @@ namespace hazelcast {
         }
 
         bool ICountDownLatch::await(long timeoutInMillis) {
-            std::auto_ptr<protocol::ClientMessage> request =
+            std::unique_ptr<protocol::ClientMessage> request =
                     protocol::codec::CountDownLatchAwaitCodec::encodeRequest(getName(), timeoutInMillis);
 
-            return invokeAndGetResult<bool, protocol::codec::CountDownLatchAwaitCodec::ResponseParameters>(request, partitionId);
+            return invokeAndGetResult<bool, protocol::codec::CountDownLatchAwaitCodec::ResponseParameters>(std::move(request), partitionId);
         }
 
         void ICountDownLatch::countDown() {
-            std::auto_ptr<protocol::ClientMessage> request =
+            std::unique_ptr<protocol::ClientMessage> request =
                     protocol::codec::CountDownLatchCountDownCodec::encodeRequest(getName());
 
-            invokeOnPartition(request, partitionId);
+            invokeOnPartition(std::move(request), partitionId);
         }
 
         int ICountDownLatch::getCount() {
-            std::auto_ptr<protocol::ClientMessage> request =
+            std::unique_ptr<protocol::ClientMessage> request =
                     protocol::codec::CountDownLatchGetCountCodec::encodeRequest(getName());
 
-            return invokeAndGetResult<int, protocol::codec::CountDownLatchGetCountCodec::ResponseParameters>(request, partitionId);
+            return invokeAndGetResult<int, protocol::codec::CountDownLatchGetCountCodec::ResponseParameters>(std::move(request), partitionId);
         }
 
         bool ICountDownLatch::trySetCount(int count) {
-            std::auto_ptr<protocol::ClientMessage> request =
+            std::unique_ptr<protocol::ClientMessage> request =
                     protocol::codec::CountDownLatchTrySetCountCodec::encodeRequest(getName(), count);
 
-            return invokeAndGetResult<bool, protocol::codec::CountDownLatchTrySetCountCodec::ResponseParameters>(request, partitionId);
+            return invokeAndGetResult<bool, protocol::codec::CountDownLatchTrySetCountCodec::ResponseParameters>(std::move(request), partitionId);
         }
     }
 }

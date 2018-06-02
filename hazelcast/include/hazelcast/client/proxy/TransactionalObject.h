@@ -78,7 +78,7 @@ namespace hazelcast {
                 }
 
                 template<typename T>
-                std::auto_ptr<T> toObject(std::auto_ptr<serialization::pimpl::Data> data) {
+                std::auto_ptr<T> toObject(std::unique_ptr<serialization::pimpl::Data> data) {
                     return context->getSerializationService().template toObject<T>(data.get());
                 }
 
@@ -97,11 +97,11 @@ namespace hazelcast {
 
                 int getTimeoutInMilliseconds() const;
 
-                boost::shared_ptr<protocol::ClientMessage> invoke(std::auto_ptr<protocol::ClientMessage> request);
+                boost::shared_ptr<protocol::ClientMessage> invoke(std::unique_ptr<protocol::ClientMessage> request);
 
                 template<typename T, typename CODEC>
-                T invokeAndGetResult(std::auto_ptr<protocol::ClientMessage> request) {
-                    boost::shared_ptr<protocol::ClientMessage> response = invoke(request);
+                T invokeAndGetResult(std::unique_ptr<protocol::ClientMessage> request) {
+                    boost::shared_ptr<protocol::ClientMessage> response = invoke(std::move(request));
 
                     return CODEC::decode(*response).response;
                 }

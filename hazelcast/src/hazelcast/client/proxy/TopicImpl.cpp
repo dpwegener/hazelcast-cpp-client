@@ -36,10 +36,10 @@ namespace hazelcast {
             }
 
             void ITopicImpl::publish(const serialization::pimpl::Data &data) {
-                std::auto_ptr<protocol::ClientMessage> request =
+                std::unique_ptr<protocol::ClientMessage> request =
                         protocol::codec::TopicPublishCodec::encodeRequest(getName(), data);
 
-                invokeOnPartition(request, partitionId);
+                invokeOnPartition(std::move(request), partitionId);
             }
 
             std::string ITopicImpl::addMessageListener(impl::BaseEventHandler *topicEventHandler) {
@@ -56,7 +56,7 @@ namespace hazelcast {
 
             ITopicImpl::TopicListenerMessageCodec::TopicListenerMessageCodec(const std::string &name) : name(name) {}
 
-            std::auto_ptr<protocol::ClientMessage>
+            std::unique_ptr<protocol::ClientMessage>
             ITopicImpl::TopicListenerMessageCodec::encodeAddRequest(bool localOnly) const {
                 return protocol::codec::TopicAddMessageListenerCodec::encodeRequest(name, localOnly);
             }
@@ -66,7 +66,7 @@ namespace hazelcast {
                 return protocol::codec::TopicAddMessageListenerCodec::ResponseParameters::decode(responseMessage).response;
             }
 
-            std::auto_ptr<protocol::ClientMessage>
+            std::unique_ptr<protocol::ClientMessage>
             ITopicImpl::TopicListenerMessageCodec::encodeRemoveRequest(const std::string &realRegistrationId) const {
                 return protocol::codec::TopicRemoveMessageListenerCodec::encodeRequest(name, realRegistrationId);
             }

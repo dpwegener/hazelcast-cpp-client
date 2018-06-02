@@ -20,6 +20,8 @@
 #include "hazelcast/client/MemberAttributeEvent.h"
 #include "hazelcast/client/impl/MemberAttributeChange.h"
 
+#include <utility>
+
 namespace hazelcast {
     namespace client {
         namespace impl {
@@ -28,13 +30,13 @@ namespace hazelcast {
 
             }
 
-            MemberAttributeChange::MemberAttributeChange(std::auto_ptr<std::string> uuid,
+            MemberAttributeChange::MemberAttributeChange(std::unique_ptr<std::string> uuid,
                                                          MemberAttributeEvent::MemberAttributeOperationType const &operationType,
-                                                         std::auto_ptr<std::string> key, std::auto_ptr<std::string> value)
-                    : uuid(uuid),
+                                                         std::unique_ptr<std::string> key, std::unique_ptr<std::string> value)
+                    : uuid(std::move(uuid)),
                       operationType(operationType),
-                      key(key),
-                      value(value) {
+                      key(std::move(key)),
+                      value(std::move(value)) {
             }
 
             const std::string &MemberAttributeChange::getUuid() const {

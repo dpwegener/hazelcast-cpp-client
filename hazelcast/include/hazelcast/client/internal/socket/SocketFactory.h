@@ -46,7 +46,7 @@ namespace hazelcast {
 
                     bool start();
 
-                    std::auto_ptr<Socket> create(const Address &address) const;
+                    std::unique_ptr<Socket> create(const Address &address) const;
                 private:
                     spi::ClientContext &clientContext;
 

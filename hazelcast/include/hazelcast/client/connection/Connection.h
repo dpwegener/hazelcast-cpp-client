@@ -130,7 +130,7 @@ namespace hazelcast {
 
                 void setConnectedServerVersion(const std::string &connectedServerVersionString);
 
-                std::auto_ptr<Address> getLocalSocketAddress() const;
+                std::unique_ptr<Address> getLocalSocketAddress() const;
 
                 int getConnectedServerVersion() const;
 
@@ -143,7 +143,7 @@ namespace hazelcast {
                 util::Atomic<int64_t> lastHeartbeatReceivedMillis;
                 spi::ClientContext& clientContext;
                 protocol::IMessageHandler &invocationService;
-                std::auto_ptr<Socket> socket;
+                std::unique_ptr<Socket> socket;
                 ReadHandler readHandler;
                 WriteHandler writeHandler;
                 util::AtomicBoolean authenticatedAsOwner;

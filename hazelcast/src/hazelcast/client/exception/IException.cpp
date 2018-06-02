@@ -88,8 +88,8 @@ namespace hazelcast {
                 return cause;
             }
 
-            std::auto_ptr<IException> IException::clone() const {
-                return std::auto_ptr<IException>(new IException(*this));
+            std::unique_ptr<IException> IException::clone() const {
+                return std::unique_ptr<IException>(new IException(*this));
             }
 
             const std::string &IException::getDetails() const {

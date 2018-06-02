@@ -137,16 +137,16 @@ namespace hazelcast {
                         }
 
                     private:
-                        std::auto_ptr<NearCacheRecordStore<KS, V> > createNearCacheRecordStore(const std::string &name,
+                        std::unique_ptr<NearCacheRecordStore<KS, V> > createNearCacheRecordStore(const std::string &name,
                                                                                                const config::NearCacheConfig<K, V> &nearCacheConfig) {
                             config::InMemoryFormat inMemoryFormat = nearCacheConfig.getInMemoryFormat();
                             switch (inMemoryFormat) {
                                 case config::BINARY:
-                                    return std::auto_ptr<NearCacheRecordStore<KS, V> >(
+                                    return std::unique_ptr<NearCacheRecordStore<KS, V> >(
                                             new store::NearCacheDataRecordStore<K, V, KS>(name, nearCacheConfig,
                                                                                           serializationService));
                                 case config::OBJECT:
-                                    return std::auto_ptr<NearCacheRecordStore<KS, V> >(
+                                    return std::unique_ptr<NearCacheRecordStore<KS, V> >(
                                             new store::NearCacheObjectRecordStore<K, V, KS>(name, nearCacheConfig,
                                                                                             serializationService));
                                 default:
@@ -208,8 +208,8 @@ namespace hazelcast {
                             }
 
                             void schedule() {
-                                task = std::auto_ptr<util::Thread>(new util::Thread(boost::shared_ptr<util::Runnable>(
-                                        new ExpirationTask(name, nearCacheRecordStore))));
+                                task = std::make_unique<util::Thread>(boost::shared_ptr<util::Runnable>(
+                                        new ExpirationTask(name, nearCacheRecordStore)));
                                 task->start();
                                 cancelled = false;
                             }
@@ -230,28 +230,28 @@ namespace hazelcast {
                             NearCacheRecordStore<KS, V> &nearCacheRecordStore;
                             int initialDelayInSeconds;
                             int periodInSeconds;
-                            std::auto_ptr<util::Thread> task;
+                            std::unique_ptr<util::Thread> task;
                             util::AtomicBoolean cancelled;
                             std::string name;
                         };
 
-                        std::auto_ptr<ExpirationTask> createAndScheduleExpirationTask() {
+                        std::unique_ptr<ExpirationTask> createAndScheduleExpirationTask() {
                             if (nearCacheConfig.getMaxIdleSeconds() > 0L ||
                                 nearCacheConfig.getTimeToLiveSeconds() > 0L) {
-                                std::auto_ptr<ExpirationTask> expirationTask(
+                                std::unique_ptr<ExpirationTask> expirationTask(
                                         new ExpirationTask(name, *nearCacheRecordStore));
                                 expirationTask->schedule();
-                                return expirationTask;
+                                return std::move(expirationTask);
                             }
-                            return std::auto_ptr<ExpirationTask>();
+                            return std::unique_ptr<ExpirationTask>();
                         }
 
                         const std::string &name;
                         const config::NearCacheConfig<K, V> &nearCacheConfig;
                         serialization::pimpl::SerializationService &serializationService;
 
-                        std::auto_ptr<NearCacheRecordStore<KS, V> > nearCacheRecordStore;
-                        std::auto_ptr<ExpirationTask> expirationTaskFuture;
+                        std::unique_ptr<NearCacheRecordStore<KS, V> > nearCacheRecordStore;
+                        std::unique_ptr<ExpirationTask> expirationTaskFuture;
 
                         util::AtomicBoolean preloadDone;
                     };

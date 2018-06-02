@@ -66,7 +66,7 @@ namespace hazelcast {
                 boost::shared_ptr<TypedData> getInternal(serialization::pimpl::Data &keyData);
 
                 //@Override
-                virtual std::auto_ptr<serialization::pimpl::Data> removeInternal(
+                virtual std::unique_ptr<serialization::pimpl::Data> removeInternal(
                         const serialization::pimpl::Data &key);
 
                 //@Override
@@ -83,14 +83,14 @@ namespace hazelcast {
                 tryPutInternal(const serialization::pimpl::Data &key, const serialization::pimpl::Data &value,
                                long timeoutInMillis);
 
-                virtual std::auto_ptr<serialization::pimpl::Data> putInternal(const serialization::pimpl::Data &key,
+                virtual std::unique_ptr<serialization::pimpl::Data> putInternal(const serialization::pimpl::Data &key,
                                                                               const serialization::pimpl::Data &value,
                                                                               long timeoutInMillis);
 
                 virtual void tryPutTransientInternal(const serialization::pimpl::Data &key,
                                                      const serialization::pimpl::Data &value, int ttlInMillis);
 
-                virtual std::auto_ptr<serialization::pimpl::Data>
+                virtual std::unique_ptr<serialization::pimpl::Data>
                 putIfAbsentInternal(const serialization::pimpl::Data &keyData,
                                     const serialization::pimpl::Data &valueData,
                                     int ttlInMillis);
@@ -99,7 +99,7 @@ namespace hazelcast {
                                                    const serialization::pimpl::Data &valueData,
                                                    const serialization::pimpl::Data &newValueData);
 
-                virtual std::auto_ptr<serialization::pimpl::Data>
+                virtual std::unique_ptr<serialization::pimpl::Data>
                 replaceInternal(const serialization::pimpl::Data &keyData,
                                 const serialization::pimpl::Data &valueData);
 
@@ -111,7 +111,7 @@ namespace hazelcast {
 
                 EntryVector getAllInternal(ClientMapProxy::PID_TO_KEY_MAP &pIdToKeyData);
 
-                virtual std::auto_ptr<serialization::pimpl::Data>
+                virtual std::unique_ptr<serialization::pimpl::Data>
                 executeOnKeyInternal(const serialization::pimpl::Data &keyData,
                                      const serialization::pimpl::Data &processor);
 
@@ -123,7 +123,7 @@ namespace hazelcast {
 
                 map::impl::nearcache::KeyStateMarker *getKeyStateMarker();
 
-                void addNearCacheInvalidateListener(std::auto_ptr<client::impl::BaseEventHandler> handler);
+                void addNearCacheInvalidateListener(std::unique_ptr<client::impl::BaseEventHandler> handler);
 
                 class ClientMapAddNearCacheEventHandler
                         : public protocol::codec::MapAddNearCacheEntryListenerCodec::AbstractEventHandler {
@@ -144,12 +144,12 @@ namespace hazelcast {
                     }
 
                     //@Override
-                    virtual void handleIMapInvalidationEventV10(std::auto_ptr<Data> key) {
+                    virtual void handleIMapInvalidationEventV10(std::unique_ptr<Data> key) {
                         // null key means Near Cache has to remove all entries in it (see MapAddNearCacheEntryListenerMessageTask)
                         if (key.get() == NULL) {
                             nearCache->clear();
                         } else {
-                            nearCache->remove(boost::shared_ptr<serialization::pimpl::Data>(key));
+                            nearCache->remove(boost::shared_ptr<serialization::pimpl::Data>(std::move(key)));
                         }
                     }
 
@@ -162,12 +162,12 @@ namespace hazelcast {
                         }
                     }
 
-                    virtual void handleIMapInvalidationEventV14(std::auto_ptr<serialization::pimpl::Data> key,
+                    virtual void handleIMapInvalidationEventV14(std::unique_ptr<serialization::pimpl::Data> key,
                                                                 const std::string &sourceUuid,
                                                                 const util::UUID &partitionUuid,
                                                                 const int64_t &sequence) {
                         // TODO: Change as Java
-                        handleIMapInvalidationEventV10(key);
+                        handleIMapInvalidationEventV10(std::move(key));
                     }
 
                     virtual void
@@ -205,11 +205,11 @@ namespace hazelcast {
                 public:
                     NearCacheEntryListenerMessageCodec(const std::string &name, int32_t listenerFlags);
 
-                    virtual std::auto_ptr<protocol::ClientMessage> encodeAddRequest(bool localOnly) const;
+                    virtual std::unique_ptr<protocol::ClientMessage> encodeAddRequest(bool localOnly) const;
 
                     virtual std::string decodeAddResponse(protocol::ClientMessage &responseMessage) const;
 
-                    virtual std::auto_ptr<protocol::ClientMessage>
+                    virtual std::unique_ptr<protocol::ClientMessage>
                     encodeRemoveRequest(const std::string &realRegistrationId) const;
 
                     virtual bool decodeRemoveResponse(protocol::ClientMessage &clientMessage) const;

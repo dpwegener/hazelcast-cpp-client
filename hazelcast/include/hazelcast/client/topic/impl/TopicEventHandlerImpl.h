@@ -83,13 +83,13 @@ namespace hazelcast {
                                                  const std::string &uuid) {
                             boost::shared_ptr<Member> member = clusterService.getMember(uuid);
 
-                            std::auto_ptr<TypedData> object(new TypedData(
-                                    std::auto_ptr<serialization::pimpl::Data>(new serialization::pimpl::Data(item)),
-                                    serializationService));
+                            std::unique_ptr<TypedData> object(std::make_unique<TypedData>(TypedData(
+                                    std::unique_ptr<serialization::pimpl::Data>(std::make_unique<serialization::pimpl::Data>(serialization::pimpl::Data(item))),
+                                    serializationService)));
 
-                            std::auto_ptr<client::topic::Message<TypedData> > listenerMsg(
-                                    new impl::MessageImpl(instanceName, object, publishTime, member));
-                            listener.onMessage(listenerMsg);
+                            std::unique_ptr<client::topic::Message<TypedData> > listenerMsg(
+                                    new impl::MessageImpl(instanceName, std::move(object), publishTime, member));
+                            listener.onMessage(std::move(listenerMsg));
                         }
                     private:
                         const std::string &instanceName;

@@ -126,7 +126,7 @@ namespace hazelcast {
                         }
                     private:
                         boost::shared_ptr<internal::nearcache::NearCache<K, V> > nearCache;
-                        std::auto_ptr<KeyStateMarker> keyStateMarker;
+                        std::unique_ptr<KeyStateMarker> keyStateMarker;
                     };
                 }
             }

@@ -43,8 +43,8 @@ namespace hazelcast {
             UndefinedErrorCodeException::~UndefinedErrorCodeException() throw() {
             }
 
-            std::auto_ptr<IException> UndefinedErrorCodeException::clone() const {
-                return std::auto_ptr<IException>(new UndefinedErrorCodeException(*this));
+            std::unique_ptr<IException> UndefinedErrorCodeException::clone() const {
+                return std::unique_ptr<IException>(new UndefinedErrorCodeException(*this));
             }
 
         }

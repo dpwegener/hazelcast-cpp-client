@@ -64,7 +64,7 @@ namespace hazelcast {
                              * @return multiple {@link com.hazelcast.internal.eviction.EvictionCandidate} these are available to be evicted
                              */
                             //@Override
-                            std::auto_ptr<std::vector<boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > > > evaluate(
+                            std::unique_ptr<std::vector<boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > > > evaluate(
                                     util::Iterable<EvictionCandidate<MAPKEY, MAPVALUE, A, E> > &evictionCandidates) const {
                                 boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > selectedEvictionCandidate;
                                 int64_t now = util::currentTimeMillis();
@@ -91,15 +91,15 @@ namespace hazelcast {
                             }
 
                         private:
-                            std::auto_ptr<std::vector<boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > > > returnEvictionCandidate(
+                            std::unique_ptr<std::vector<boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > > > returnEvictionCandidate(
                                     const boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > &evictionCandidate) const {
                                 if (evictionCandidate.get() == NULL) {
-                                    return std::auto_ptr<std::vector<boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > > >();
+                                    return std::unique_ptr<std::vector<boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > > >();
                                 } else {
-                                    std::auto_ptr<std::vector<boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > > > result(
+                                    std::unique_ptr<std::vector<boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > > > result(
                                             new std::vector<boost::shared_ptr<eviction::EvictionCandidate<MAPKEY, MAPVALUE, A, E> > >());
                                     result->push_back(evictionCandidate);
-                                    return result;
+                                    return std::move(result);
                                 }
                             }
 

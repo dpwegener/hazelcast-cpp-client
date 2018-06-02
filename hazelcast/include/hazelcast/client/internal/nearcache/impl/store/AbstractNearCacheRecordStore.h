@@ -212,32 +212,32 @@ namespace hazelcast {
                                 }
                             }
                         protected:
-                            virtual std::auto_ptr<eviction::MaxSizeChecker> createNearCacheMaxSizeChecker(
+                            virtual std::unique_ptr<eviction::MaxSizeChecker> createNearCacheMaxSizeChecker(
                                     const boost::shared_ptr<config::EvictionConfig<K, V> > &evictionConfig,
                                     const config::NearCacheConfig<K, V> &nearCacheConfig) {
                                 assert(0);
-                                return std::auto_ptr<eviction::MaxSizeChecker>();
+                                return std::unique_ptr<eviction::MaxSizeChecker>();
                             }
 
-                            virtual std::auto_ptr<NCRM> createNearCacheRecordMap(
+                            virtual std::unique_ptr<NCRM> createNearCacheRecordMap(
                                     const config::NearCacheConfig<K, V> &nearCacheConfig) {
                                 assert(0);
-                                return std::auto_ptr<NCRM>();
+                                return std::unique_ptr<NCRM>();
                             }
 
                             virtual int64_t getKeyStorageMemoryCost(KS *key) const = 0;
 
                             virtual int64_t getRecordStorageMemoryCost(R *record) const = 0;
 
-                            virtual std::auto_ptr<R> valueToRecord(const boost::shared_ptr<V> &value) {
+                            virtual std::unique_ptr<R> valueToRecord(const boost::shared_ptr<V> &value) {
                                 assert(0);
-                                return std::auto_ptr<R>();
+                                return std::unique_ptr<R>();
                             }
 
-                            virtual std::auto_ptr<R> valueToRecord(
+                            virtual std::unique_ptr<R> valueToRecord(
                                     const boost::shared_ptr<serialization::pimpl::Data> &value) {
                                 assert(0);
-                                return std::auto_ptr<R>();
+                                return std::unique_ptr<R>();
                             }
 
                             virtual boost::shared_ptr<V> recordToValue(const R *record) {
@@ -273,7 +273,7 @@ namespace hazelcast {
                                 }
                             }
 
-                            std::auto_ptr<eviction::EvictionPolicyEvaluator<K, V, KS, R> > createEvictionPolicyEvaluator(
+                            std::unique_ptr<eviction::EvictionPolicyEvaluator<K, V, KS, R> > createEvictionPolicyEvaluator(
                                     const boost::shared_ptr<config::EvictionConfig<K, V> > &evictionConfig) {
                                 return eviction::EvictionPolicyEvaluatorProvider::getEvictionPolicyEvaluator<K, V, KS, R>(
                                         evictionConfig);
@@ -285,9 +285,9 @@ namespace hazelcast {
                                         evictionConfig);
                             }
 
-                            std::auto_ptr<eviction::EvictionChecker> createEvictionChecker(
+                            std::unique_ptr<eviction::EvictionChecker> createEvictionChecker(
                                     const config::NearCacheConfig<K, V> &nearCacheConfig) {
-                                return std::auto_ptr<eviction::EvictionChecker>(
+                                return std::unique_ptr<eviction::EvictionChecker>(
                                         new MaxSizeEvictionChecker(maxSizeChecker.get()));
                             }
 
@@ -437,12 +437,12 @@ namespace hazelcast {
                             serialization::pimpl::SerializationService &serializationService;
                             monitor::impl::NearCacheStatsImpl nearCacheStats;
 
-                            std::auto_ptr<eviction::MaxSizeChecker> maxSizeChecker;
-                            std::auto_ptr<eviction::EvictionPolicyEvaluator<K, V, KS, R> > evictionPolicyEvaluator;
-                            std::auto_ptr<eviction::EvictionChecker> evictionChecker;
+                            std::unique_ptr<eviction::MaxSizeChecker> maxSizeChecker;
+                            std::unique_ptr<eviction::EvictionPolicyEvaluator<K, V, KS, R> > evictionPolicyEvaluator;
+                            std::unique_ptr<eviction::EvictionChecker> evictionChecker;
                             boost::shared_ptr<eviction::EvictionStrategy<K, V, KS, R, NCRM> > evictionStrategy;
                             eviction::EvictionPolicyType evictionPolicyType;
-                            std::auto_ptr<NCRM> records;
+                            std::unique_ptr<NCRM> records;
 
 /*
                             volatile StaleReadDetector staleReadDetector = ALWAYS_FRESH;

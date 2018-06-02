@@ -53,7 +53,7 @@ namespace hazelcast {
             }
 
             boost::shared_ptr<protocol::ClientMessage> ProxyImpl::invokeOnPartition(
-                    std::auto_ptr<protocol::ClientMessage> request, int partitionId) {
+                    std::unique_ptr<protocol::ClientMessage> request, int partitionId) {
 
                 boost::shared_ptr<spi::impl::ClientInvocation> invocation = spi::impl::ClientInvocation::create(
                         *context, request, getName(), partitionId);
@@ -61,14 +61,14 @@ namespace hazelcast {
             }
 
             boost::shared_ptr<spi::impl::ClientInvocationFuture>
-            ProxyImpl::invokeAndGetFuture(std::auto_ptr<protocol::ClientMessage> request, int partitionId) {
+            ProxyImpl::invokeAndGetFuture(std::unique_ptr<protocol::ClientMessage> request, int partitionId) {
                 boost::shared_ptr<spi::impl::ClientInvocation> invocation = spi::impl::ClientInvocation::create(
                         *context, request, getName(), partitionId);
                 return invocation->invoke();
             }
 
             boost::shared_ptr<protocol::ClientMessage>
-            ProxyImpl::invoke(std::auto_ptr<protocol::ClientMessage> request) {
+            ProxyImpl::invoke(std::unique_ptr<protocol::ClientMessage> request) {
                 boost::shared_ptr<spi::impl::ClientInvocation> invocation = spi::impl::ClientInvocation::create(
                         *context, request, getName());
                 return invocation->invoke()->get();
@@ -77,7 +77,7 @@ namespace hazelcast {
             void ProxyImpl::destroy() {
                 onDestroy();
 
-                std::auto_ptr<protocol::ClientMessage> request = protocol::codec::ClientDestroyProxyCodec::encodeRequest(
+                std::unique_ptr<protocol::ClientMessage> request = protocol::codec::ClientDestroyProxyCodec::encodeRequest(
                         DistributedObject::getName(), DistributedObject::getServiceName());
 
                 boost::shared_ptr<spi::impl::ClientInvocation> invocation = spi::impl::ClientInvocation::create(
@@ -85,7 +85,7 @@ namespace hazelcast {
                 invocation->invoke()->get();
             }
 
-            boost::shared_ptr<protocol::ClientMessage> ProxyImpl::invoke(std::auto_ptr<protocol::ClientMessage> request,
+            boost::shared_ptr<protocol::ClientMessage> ProxyImpl::invoke(std::unique_ptr<protocol::ClientMessage> request,
                                                                          boost::shared_ptr<connection::Connection> conn) {
                 boost::shared_ptr<spi::impl::ClientInvocation> invocation = spi::impl::ClientInvocation::create(
                         *context, request, getName(), conn);
@@ -98,8 +98,8 @@ namespace hazelcast {
                 typedef std::vector<serialization::pimpl::Data> VALUES;
                 BOOST_FOREACH(const VALUES::value_type &value, values) {
                                 result.push_back(TypedData(
-                                        std::auto_ptr<serialization::pimpl::Data>(
-                                                new serialization::pimpl::Data(value)),
+                                        std::make_unique<serialization::pimpl::Data>(
+                                                (value)),
                                         context->getSerializationService()));
                             }
                 return result;
@@ -111,10 +111,10 @@ namespace hazelcast {
                 std::vector<std::pair<TypedData, TypedData> > result;
                 BOOST_FOREACH(const ENTRIES_DATA::value_type &value, dataEntrySet) {
                                 serialization::pimpl::SerializationService &serializationService = context->getSerializationService();
-                                TypedData keyData(std::auto_ptr<serialization::pimpl::Data>(
-                                        new serialization::pimpl::Data(value.first)), serializationService);
-                                TypedData valueData(std::auto_ptr<serialization::pimpl::Data>(
-                                        new serialization::pimpl::Data(value.second)), serializationService);
+                                TypedData keyData(std::make_unique<serialization::pimpl::Data>(
+                                        (value.first)), serializationService);
+                                TypedData valueData(std::make_unique<serialization::pimpl::Data>(
+                                        (value.second)), serializationService);
                                 result.push_back(std::make_pair(keyData, valueData));
                             }
                 return result;

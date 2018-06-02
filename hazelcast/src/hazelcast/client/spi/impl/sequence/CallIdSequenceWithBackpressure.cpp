@@ -25,7 +25,7 @@ namespace hazelcast {
         namespace spi {
             namespace impl {
                 namespace sequence {
-                    const std::auto_ptr<util::concurrent::IdleStrategy> CallIdSequenceWithBackpressure::IDLER(
+                    const std::unique_ptr<util::concurrent::IdleStrategy> CallIdSequenceWithBackpressure::IDLER(
                             new util::concurrent::BackoffIdleStrategy(
                                     0, 0, boost::posix_time::microseconds(1000).total_nanoseconds(),
                                     boost::posix_time::microseconds(MAX_DELAY_MS * 1000).total_nanoseconds()));

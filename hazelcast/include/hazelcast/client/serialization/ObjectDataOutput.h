@@ -66,7 +66,7 @@ namespace hazelcast {
                 /**
                 * @return copy of internal byte array
                 */
-                std::auto_ptr<std::vector<byte> > toByteArray();
+                std::unique_ptr<std::vector<byte> > toByteArray();
 
                 /**
                 * Writes all the bytes in array to stream

@@ -385,19 +385,19 @@ namespace hazelcast {
                 util::CountDownLatch shutdownLatch;
                 spi::ClientContext clientContext;
                 serialization::pimpl::SerializationService serializationService;
-                std::auto_ptr<connection::ClientConnectionManagerImpl> connectionManager;
+                std::unique_ptr<connection::ClientConnectionManagerImpl> connectionManager;
                 internal::nearcache::NearCacheManager nearCacheManager;
                 spi::impl::ClientClusterServiceImpl clusterService;
                 boost::shared_ptr<spi::impl::ClientPartitionServiceImpl> partitionService;
-                std::auto_ptr<spi::impl::ClientExecutionServiceImpl> executionService;
-                std::auto_ptr<spi::ClientInvocationService> invocationService;
+                std::unique_ptr<spi::impl::ClientExecutionServiceImpl> executionService;
+                std::unique_ptr<spi::ClientInvocationService> invocationService;
                 boost::shared_ptr<spi::ClientListenerService> listenerService;
                 spi::impl::ClientTransactionManagerServiceImpl transactionManager;
                 Cluster cluster;
                 spi::LifecycleService lifecycleService;
                 spi::ProxyManager proxyManager;
-                std::auto_ptr<mixedtype::HazelcastClient> mixedTypeSupportAdaptor;
-                std::auto_ptr<spi::impl::sequence::CallIdSequence> callIdSequence;
+                std::unique_ptr<mixedtype::HazelcastClient> mixedTypeSupportAdaptor;
+                std::unique_ptr<spi::impl::sequence::CallIdSequence> callIdSequence;
                 protocol::ClientExceptionFactory exceptionFactory;
                 std::string instanceName;
                 static util::Atomic<int32_t> CLIENT_ID;
@@ -412,11 +412,11 @@ namespace hazelcast {
 
                 boost::shared_ptr<spi::ClientListenerService> initListenerService();
 
-                std::auto_ptr<spi::ClientInvocationService> initInvocationService();
+                std::unique_ptr<spi::ClientInvocationService> initInvocationService();
 
-                std::auto_ptr<spi::impl::ClientExecutionServiceImpl> initExecutionService();
+                std::unique_ptr<spi::impl::ClientExecutionServiceImpl> initExecutionService();
 
-                std::auto_ptr<connection::ClientConnectionManagerImpl> initConnectionManagerService(
+                std::unique_ptr<connection::ClientConnectionManagerImpl> initConnectionManagerService(
                         const std::vector<boost::shared_ptr<connection::AddressProvider> > &addressProviders);
 
                 std::vector<boost::shared_ptr<connection::AddressProvider> > createAddressProviders();

@@ -25,6 +25,8 @@
 
 #include "hazelcast/client/protocol/ClientMessage.h"
 #include <hazelcast/client/protocol/codec/UUIDCodec.h>
+
+#include <utility>
 #include "hazelcast/client/Socket.h"
 #include "hazelcast/client/protocol/codec/AddressCodec.h"
 #include "hazelcast/client/protocol/codec/MemberCodec.h"
@@ -59,14 +61,14 @@ namespace hazelcast {
                 setDataOffset(HEADER_SIZE);
             }
 
-            std::auto_ptr<ClientMessage> ClientMessage::createForEncode(int32_t size) {
-                std::auto_ptr<ClientMessage> msg(new ClientMessage(size));
+            std::unique_ptr<ClientMessage> ClientMessage::createForEncode(int32_t size) {
+                std::unique_ptr<ClientMessage> msg(new ClientMessage(size));
                 msg->wrapForEncode(size);
-                return msg;
+                return (msg);
             }
 
-            std::auto_ptr<ClientMessage> ClientMessage::create(int32_t size) {
-                return std::auto_ptr<ClientMessage>(new ClientMessage(size));
+            std::unique_ptr<ClientMessage> ClientMessage::create(int32_t size) {
+                return std::unique_ptr<ClientMessage>(new ClientMessage(size));
             }
 
             //----- Setter methods begin --------------------------------------
@@ -227,12 +229,12 @@ namespace hazelcast {
                 checkAvailable(len);
 
                 byte *start = ix();
-                std::auto_ptr<std::vector<byte> > bytes = std::auto_ptr<std::vector<byte> >(new std::vector<byte>(start,
+                std::unique_ptr<std::vector<byte> > bytes = std::make_unique<std::vector<byte> >(start,
                                                                                                                   start +
-                                                                                                                  len));
+                                                                                                                  len);
                 index += len;
 
-                return serialization::pimpl::Data(bytes);
+                return serialization::pimpl::Data(std::move(bytes));
             }
 
             template<>

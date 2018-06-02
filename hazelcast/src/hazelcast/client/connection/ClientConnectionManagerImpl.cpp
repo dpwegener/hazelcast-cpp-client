@@ -17,6 +17,7 @@
 // Created by sancar koyunlu on 8/21/13.
 
 #include <boost/foreach.hpp>
+#include <utility>
 
 #include "hazelcast/client/impl/ExecutionCallback.h"
 #include "hazelcast/client/LifecycleEvent.h"
@@ -120,7 +121,7 @@ namespace hazelcast {
                 }
 
                 startEventLoopGroup();
-                heartbeat.reset(new HeartbeatManager(client));
+                heartbeat = std::make_unique<hazelcast::client::connection::HeartbeatManager>(client);
                 heartbeat->start();
                 addConnectionHeartbeatListener(boost::shared_ptr<spi::impl::ConnectionHeartbeatListener>(
                         new spi::impl::ConnectionHeartbeatListenerDelegator(*this)));
@@ -290,7 +291,7 @@ namespace hazelcast {
             ClientConnectionManagerImpl::authenticate(const Address &target, boost::shared_ptr<Connection> &connection,
                                                       bool asOwner, boost::shared_ptr<AuthenticationFuture> &future) {
                 boost::shared_ptr<protocol::Principal> principal = getPrincipal();
-                std::auto_ptr<protocol::ClientMessage> clientMessage = encodeAuthenticationRequest(asOwner,
+                std::unique_ptr<protocol::ClientMessage> clientMessage = encodeAuthenticationRequest(asOwner,
                                                                                                    client.getSerializationService(),
                                                                                                    principal.get());
                 boost::shared_ptr<spi::impl::ClientInvocation> clientInvocation = spi::impl::ClientInvocation::create(
@@ -309,7 +310,7 @@ namespace hazelcast {
                 return principal;
             }
 
-            std::auto_ptr<protocol::ClientMessage>
+            std::unique_ptr<protocol::ClientMessage>
             ClientConnectionManagerImpl::encodeAuthenticationRequest(bool asOwner,
                                                                      serialization::pimpl::SerializationService &ss,
                                                                      const protocol::Principal *principal) {
@@ -320,7 +321,7 @@ namespace hazelcast {
                     uuid = principal->getUuid();
                     ownerUuid = principal->getOwnerUuid();
                 }
-                std::auto_ptr<protocol::ClientMessage> clientMessage;
+                std::unique_ptr<protocol::ClientMessage> clientMessage;
                 if (credentials == NULL) {
                     // TODO: Change UsernamePasswordCredentials to implement Credentials interface so that we can just 
                     // upcast the credentials as done at Java
@@ -564,10 +565,10 @@ namespace hazelcast {
                 return addresses;
             }
 
-            std::auto_ptr<ClientConnectionStrategy>
+            std::unique_ptr<ClientConnectionStrategy>
             ClientConnectionManagerImpl::initializeStrategy(spi::ClientContext &client) {
                 // TODO: Add a way so that this strategy can be configurable as in Java
-                return std::auto_ptr<ClientConnectionStrategy>(new DefaultClientConnectionStrategy(client, logger,
+                return std::unique_ptr<ClientConnectionStrategy>(new DefaultClientConnectionStrategy(client, logger,
                                                                                                    client.getClientConfig().getConnectionStrategyConfig()));
             }
 
@@ -688,10 +689,10 @@ namespace hazelcast {
                 timeoutTaskFuture.cancel(true);
 */
 
-                std::auto_ptr<protocol::codec::ClientAuthenticationCodec::ResponseParameters> result;
+                std::unique_ptr<protocol::codec::ClientAuthenticationCodec::ResponseParameters> result;
                 try {
-                    result.reset(new protocol::codec::ClientAuthenticationCodec::ResponseParameters(
-                            protocol::codec::ClientAuthenticationCodec::ResponseParameters::decode(*response)));
+                    result = std::make_unique<protocol::codec::ClientAuthenticationCodec::ResponseParameters>(
+                            protocol::codec::ClientAuthenticationCodec::ResponseParameters::decode(*response));
                 } catch (exception::IException &e) {
                     onFailure(boost::shared_ptr<exception::IException>(e.clone()));
                     return;
@@ -700,11 +701,11 @@ namespace hazelcast {
                 switch (authenticationStatus) {
                     case protocol::AUTHENTICATED: {
                         connection->setConnectedServerVersion(result->serverHazelcastVersion);
-                        connection->setRemoteEndpoint(boost::shared_ptr<Address>(result->address));
+                        connection->setRemoteEndpoint(boost::shared_ptr<Address>(std::move(result->address)));
                         if (asOwner) {
                             connection->setIsAuthenticatedAsOwner();
                             boost::shared_ptr<protocol::Principal> principal(
-                                    new protocol::Principal(result->uuid, result->ownerUuid));
+                                    new protocol::Principal(std::move(result->uuid), std::move(result->ownerUuid)));
                             connectionManager.setPrincipal(principal);
                             //setting owner connection is moved to here(before onAuthenticated/before connected event)
                             //so that invocations that requires owner connection on this connection go through

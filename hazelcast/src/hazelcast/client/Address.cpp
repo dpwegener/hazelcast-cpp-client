@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 #include "hazelcast/client/Address.h"
+
+#include <utility>
 #include "hazelcast/util/AddressUtil.h"
 #include "hazelcast/client/cluster/impl/ClusterDataSerializerHook.h"
 #include "hazelcast/client/serialization/ObjectDataOutput.h"

@@ -28,7 +28,7 @@ namespace hazelcast {
             }
 
             void ReliableTopicImpl::publish(const serialization::pimpl::Data &data) {
-                topic::impl::reliable::ReliableTopicMessage message(data, std::auto_ptr<Address>());
+                topic::impl::reliable::ReliableTopicMessage message(data, std::unique_ptr<Address>());
                 ringbuffer->add(message);
             }
         }

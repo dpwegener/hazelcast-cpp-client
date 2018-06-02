@@ -149,10 +149,10 @@ namespace hazelcast {
                     return u.d;
                 }
 
-                std::auto_ptr<std::string> DataInput::readUTF() {
+                std::unique_ptr<std::string> DataInput::readUTF() {
                     int32_t len = readInt();
                     if (util::Bits::NULL_ARRAY == len) {
-                        return std::auto_ptr<std::string>(NULL);
+                        return std::unique_ptr<std::string>();
                     } else {
                         int numBytesToRead = 0;
                         for (int i = 0; i < len ; ++i) {
@@ -163,9 +163,9 @@ namespace hazelcast {
                         }
 
                         const std::vector<unsigned char>::const_iterator start = buffer.begin() + pos;
-                        std::auto_ptr<std::string> result(new std::string(start, start + numBytesToRead));
+                        std::unique_ptr<std::string> result(new std::string(start, start + numBytesToRead));
                         pos += numBytesToRead;
-                        return result;
+                        return (result);
                     }
                 }
 
@@ -181,48 +181,48 @@ namespace hazelcast {
                 }
                 //private functions
 
-                std::auto_ptr<std::vector<byte> > DataInput::readByteArray() {
+                std::unique_ptr<std::vector<byte> > DataInput::readByteArray() {
                     return readArray<byte>();
                 }
 
-                std::auto_ptr<std::vector<bool> > DataInput::readBooleanArray() {
+                std::unique_ptr<std::vector<bool> > DataInput::readBooleanArray() {
                     return readArray<bool>();
                 }
 
-                std::auto_ptr<std::vector<char> > DataInput::readCharArray() {
+                std::unique_ptr<std::vector<char> > DataInput::readCharArray() {
                     return readArray<char>();
                 }
 
-                std::auto_ptr<std::vector<int32_t> > DataInput::readIntArray() {
+                std::unique_ptr<std::vector<int32_t> > DataInput::readIntArray() {
                     return readArray<int32_t>();
                 }
 
-                std::auto_ptr<std::vector<int64_t> > DataInput::readLongArray() {
+                std::unique_ptr<std::vector<int64_t> > DataInput::readLongArray() {
                     return readArray<int64_t>();
                 }
 
-                std::auto_ptr<std::vector<double> > DataInput::readDoubleArray() {
+                std::unique_ptr<std::vector<double> > DataInput::readDoubleArray() {
                     return readArray<double>();
                 }
 
-                std::auto_ptr<std::vector<float> > DataInput::readFloatArray() {
+                std::unique_ptr<std::vector<float> > DataInput::readFloatArray() {
                     return readArray<float>();
                 }
 
-                std::auto_ptr<std::vector<int16_t> > DataInput::readShortArray() {
+                std::unique_ptr<std::vector<int16_t> > DataInput::readShortArray() {
                     return readArray<int16_t>();
                 }
 
-                std::auto_ptr<std::vector<std::string> > DataInput::readUTFArray() {
+                std::unique_ptr<std::vector<std::string> > DataInput::readUTFArray() {
                     int32_t len = readInt();
                     if (util::Bits::NULL_ARRAY == len) {
-                        return std::auto_ptr<std::vector<std::string> >();
+                        return std::unique_ptr<std::vector<std::string> >();
                     }
 
-                    std::auto_ptr<std::vector<std::string> > values(
+                    std::unique_ptr<std::vector<std::string> > values(
                             new std::vector<std::string>());
                     for (int32_t i = 0; i < len; ++i) {
-                        std::auto_ptr<std::string> value = readUTF();
+                        std::unique_ptr<std::string> value = readUTF();
                         // handle null pointer possibility
                         if ((std::string *)NULL == value.get()) {
                             values->push_back(std::string(""));
@@ -230,16 +230,16 @@ namespace hazelcast {
                             values->push_back(*value);
                         }
                     }
-                    return values;
+                    return (values);
                 }
 
-                std::auto_ptr<std::vector<std::string *> > DataInput::readUTFPointerArray() {
+                std::unique_ptr<std::vector<std::string *> > DataInput::readUTFPointerArray() {
                     int32_t len = readInt();
                     if (util::Bits::NULL_ARRAY == len) {
-                        return std::auto_ptr<std::vector<std::string *> >();
+                        return std::unique_ptr<std::vector<std::string *> >();
                     }
 
-                    std::auto_ptr<std::vector<std::string *> > values(
+                    std::unique_ptr<std::vector<std::string *> > values(
                             new std::vector<std::string *>());
                     try {
                         for (int32_t i = 0; i < len; ++i) {
@@ -253,7 +253,7 @@ namespace hazelcast {
                                     }
                         throw;
                     }
-                    return values;
+                    return (values);
                 }
 
                 void DataInput::checkAvailable(size_t requestedLength) {

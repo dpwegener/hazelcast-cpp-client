@@ -22,7 +22,7 @@ namespace hazelcast {
         namespace txn {
 
             boost::shared_ptr<protocol::ClientMessage>
-            ClientTransactionUtil::invoke(std::auto_ptr<protocol::ClientMessage> &request,
+            ClientTransactionUtil::invoke(std::unique_ptr<protocol::ClientMessage> &request,
                                           const std::string &objectName,
                                           spi::ClientContext &client,
                                           const boost::shared_ptr<connection::Connection> &connection) {

@@ -84,7 +84,7 @@ namespace hazelcast {
                 void
                 ClientMembershipListener::handleMemberAttributeChangeEventV10(const std::string &uuid, const std::string &key,
                                                                       const int32_t &operationType,
-                                                                      std::auto_ptr<std::string> value) {
+                                                                      std::unique_ptr<std::string> value) {
                     std::vector<Member> members = clusterService.getMemberList();
                     BOOST_FOREACH (Member &target, members) {
                                     if (target.getUuid() == uuid) {
@@ -199,7 +199,7 @@ namespace hazelcast {
                         const boost::shared_ptr<connection::Connection> &ownerConnection) {
                     listener->initialListFetchedLatch = boost::shared_ptr<util::CountDownLatch>(
                             new util::CountDownLatch(1));
-                    std::auto_ptr<protocol::ClientMessage> clientMessage = protocol::codec::ClientAddMembershipListenerCodec::encodeRequest(
+                    std::unique_ptr<protocol::ClientMessage> clientMessage = protocol::codec::ClientAddMembershipListenerCodec::encodeRequest(
                             false);
                     boost::shared_ptr<ClientInvocation> invocation = ClientInvocation::create(listener->client,
                                                                                               clientMessage, "",

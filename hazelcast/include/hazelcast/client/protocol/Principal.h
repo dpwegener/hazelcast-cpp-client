@@ -35,7 +35,7 @@ namespace hazelcast {
         namespace protocol {
             class HAZELCAST_API Principal {
             public:
-                Principal(std::auto_ptr<std::string> id, std::auto_ptr<std::string> owner);
+                Principal(std::unique_ptr<std::string> id, std::unique_ptr<std::string> owner);
 
                 const std::string *getUuid() const;
 

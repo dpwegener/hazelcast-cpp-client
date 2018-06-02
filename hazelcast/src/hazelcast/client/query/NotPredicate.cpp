@@ -15,6 +15,8 @@
  */
 
 #include "hazelcast/client/query/NotPredicate.h"
+
+#include <utility>
 #include "hazelcast/client/query/impl/predicates/PredicateDataSerializerHook.h"
 #include "hazelcast/client/serialization/ObjectDataOutput.h"
 #include "hazelcast/client/serialization/ObjectDataInput.h"
@@ -22,8 +24,8 @@
 namespace hazelcast {
     namespace client {
         namespace query {
-            NotPredicate::NotPredicate(std::auto_ptr<Predicate> predicate)
-                    : internalPredicate(predicate) {
+            NotPredicate::NotPredicate(std::unique_ptr<Predicate> predicate)
+                    : internalPredicate(std::move(predicate)) {
             }
 
             int NotPredicate::getFactoryId() const {

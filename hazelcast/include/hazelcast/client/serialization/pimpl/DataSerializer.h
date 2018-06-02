@@ -49,7 +49,7 @@ namespace hazelcast {
                     virtual int32_t getHazelcastTypeId() const;
 
                     template <typename T>
-                    std::auto_ptr<T> readObject(ObjectDataInput &in) {
+                    std::unique_ptr<T> readObject(ObjectDataInput &in) {
                         checkIfIdentifiedDataSerializable(in);
                         int32_t factoryId = readInt(in);
                         int32_t classId = readInt(in);
@@ -58,7 +58,7 @@ namespace hazelcast {
                                 serializationConfig.getDataSerializableFactories();
                         std::map<int, boost::shared_ptr<hazelcast::client::serialization::DataSerializableFactory> >::const_iterator dsfIterator =
                                 dataSerializableFactories.find(factoryId);
-                        std::auto_ptr<IdentifiedDataSerializable> object;
+                        std::unique_ptr<IdentifiedDataSerializable> object;
 
                         #ifdef __clang__
                         #pragma clang diagnostic push
@@ -72,7 +72,7 @@ namespace hazelcast {
 
                         object->readData(in);
 
-                        return std::auto_ptr<T>(reinterpret_cast<T *>(object.release()));
+                        return std::unique_ptr<T>(reinterpret_cast<T *>(object.release()));
                         #ifdef __clang__
                         #pragma clang diagnostic pop
                         #endif

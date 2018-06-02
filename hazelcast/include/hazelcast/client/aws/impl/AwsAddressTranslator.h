@@ -55,7 +55,7 @@ namespace hazelcast {
                 private:
                     bool findFromCache(const Address &address, Address &translatedAddress);
 
-                    std::auto_ptr<AWSClient> awsClient;
+                    std::unique_ptr<AWSClient> awsClient;
                     util::Atomic<boost::shared_ptr<std::map<std::string, std::string> > > privateToPublic;
                 };
             };
