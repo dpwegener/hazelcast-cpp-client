@@ -63,7 +63,7 @@ namespace hazelcast {
                 }
 
                 QueuePollCodec::ResponseParameters::ResponseParameters(const QueuePollCodec::ResponseParameters &rhs) {
-                    response = std::unique_ptr<serialization::pimpl::Data>(new serialization::pimpl::Data(*rhs.response));
+                    response = std::make_unique<serialization::pimpl::Data>((*rhs.response));
                 }
 
             }

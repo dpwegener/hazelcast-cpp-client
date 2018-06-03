@@ -68,17 +68,17 @@ namespace hazelcast {
                 }
 
                 template<typename T>
-                std::auto_ptr<T> toObject(const serialization::pimpl::Data& data) {
+                std::unique_ptr<T> toObject(const serialization::pimpl::Data& data) {
                     return context->getSerializationService().template toObject<T>(data);
                 }
 
                 template<typename T>
-                std::auto_ptr<T> toObject(const serialization::pimpl::Data *data) {
+                std::unique_ptr<T> toObject(const serialization::pimpl::Data *data) {
                     return context->getSerializationService().template toObject<T>(data);
                 }
 
                 template<typename T>
-                std::auto_ptr<T> toObject(std::unique_ptr<serialization::pimpl::Data> data) {
+                std::unique_ptr<T> toObject(std::unique_ptr<serialization::pimpl::Data> data) {
                     return context->getSerializationService().template toObject<T>(data.get());
                 }
 

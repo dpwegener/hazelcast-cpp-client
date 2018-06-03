@@ -111,13 +111,13 @@ namespace hazelcast {
                 ClientAuthenticationCustomCodec::ResponseParameters::ResponseParameters(
                         const ClientAuthenticationCustomCodec::ResponseParameters &rhs) {
                     status = rhs.status;
-                    address = std::unique_ptr<Address>(new Address(*rhs.address));
-                    uuid = std::unique_ptr<std::string>(new std::string(*rhs.uuid));
-                    ownerUuid = std::unique_ptr<std::string>(new std::string(*rhs.ownerUuid));
+                    address = std::make_unique<Address>((*rhs.address));
+                    uuid = std::make_unique<std::string>((*rhs.uuid));
+                    ownerUuid = std::make_unique<std::string>((*rhs.ownerUuid));
                     serializationVersion = rhs.serializationVersion;
                     serverHazelcastVersion = rhs.serverHazelcastVersion;
-                    clientUnregisteredMembers = std::unique_ptr<std::vector<Member> >(
-                            new std::vector<Member>(*rhs.clientUnregisteredMembers));
+                    clientUnregisteredMembers = std::make_unique<std::vector<Member> >(
+                            (*rhs.clientUnregisteredMembers));
                 }
 
             }

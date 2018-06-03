@@ -218,8 +218,8 @@ namespace hazelcast {
                     size_t pageSize = (size_t) predicate.getPageSize();
                     int page = (int) predicate.getPage();
                     for (size_t i = pageSize; i <= size && nearestPage < page; i += pageSize) {
-                        std::auto_ptr<K> key = entries.releaseKey(i - 1);
-                        std::auto_ptr<V> value = entries.releaseValue(i - 1);
+                        std::unique_ptr<K> key = entries.releaseKey(i - 1);
+                        std::unique_ptr<V> value = entries.releaseValue(i - 1);
                         std::pair<K *, V *> anchor(key.release(), value.release());
                         nearestPage++;
                         predicate.setAnchor((size_t) nearestPage, anchor);

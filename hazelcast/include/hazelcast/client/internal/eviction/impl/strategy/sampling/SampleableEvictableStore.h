@@ -51,7 +51,7 @@ namespace hazelcast {
                                  */
                                 std::unique_ptr<util::Iterable<EvictionCandidate<K, V, A, E> > > sample(int32_t sampleCount) const {
                                     assert(0);
-                                    return std::auto_ptr<util::Iterable<EvictionCandidate<K, V, A, E> > >();
+                                    return std::unique_ptr<util::Iterable<EvictionCandidate<K, V, A, E> > >();
                                 }
                             };
                         }

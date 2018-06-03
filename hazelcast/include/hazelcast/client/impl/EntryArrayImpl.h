@@ -118,7 +118,7 @@ namespace hazelcast {
                  * @return Deserializes the data and returns the key object for the data at the provided index.
                  * @throws IllegalArgumentException If provided index is greater than the maximum array index.
                  */
-                std::auto_ptr<K> releaseKey(size_t index) {
+                std::unique_ptr<K> releaseKey(size_t index) {
                     checkIndex(index);
                     return deserializedEntries[index].releaseKey();
                 }
@@ -142,7 +142,7 @@ namespace hazelcast {
                  * @return Deserializes the data and returns the value object for the data at the provided index.
                  * @throws IllegalArgumentException If provided index is greater than the maximum array index.
                  */
-                std::auto_ptr<V> releaseValue(size_t index) {
+                std::unique_ptr<V> releaseValue(size_t index) {
                     checkIndex(index);
                     return deserializedEntries[index].releaseValue();
                 }
@@ -190,9 +190,9 @@ namespace hazelcast {
                         return key;
                     }
 
-                    std::auto_ptr<K> releaseKey() {
+                    std::unique_ptr<K> releaseKey() {
                         if (isKeyDeserialized) {
-                            std::auto_ptr<K> result(key);
+                            std::unique_ptr<K> result(key);
                             isKeyDeserialized = false;
                             key = NULL;
                             return result;
@@ -211,9 +211,9 @@ namespace hazelcast {
                         return value;
                     }
 
-                    std::auto_ptr<V> releaseValue() {
+                    std::unique_ptr<V> releaseValue() {
                         if (isValueDeserialized) {
-                            std::auto_ptr<V> result(value);
+                            std::unique_ptr<V> result(value);
                             isValueDeserialized = false;
                             value = NULL;
                             return result;

@@ -158,7 +158,7 @@ namespace hazelcast {
              * @throws one of the hazelcast exceptions, if an exception was stored in the shared state referenced by
              * the future
              */
-            std::auto_ptr<V> get() {
+            std::unique_ptr<V> get() {
                 if (!clientInvocationFuture.get()) {
                     throw exception::FutureUninitialized("Future::get", "Future needs to be initialized. "
                             "It may have been moved from.");
@@ -172,7 +172,7 @@ namespace hazelcast {
 
                 std::unique_ptr<serialization::pimpl::Data> response = decoderFunction(*responseMsg);
 
-                std::auto_ptr<V> result = serializationService.toObject<V>(response.get());
+                std::unique_ptr<V> result = serializationService.toObject<V>(response.get());
 
                 return result;
             }

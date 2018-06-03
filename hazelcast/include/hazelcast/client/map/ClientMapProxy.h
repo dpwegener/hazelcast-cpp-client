@@ -645,7 +645,7 @@ namespace hazelcast {
                     size_t size = dataResult.size();
                     std::vector<K> keys(size);
                     for (size_t i = 0; i < size; ++i) {
-                        std::auto_ptr<K> key = toObject<K>(dataResult[i]);
+                        std::unique_ptr<K> key = toObject<K>(dataResult[i]);
                         keys[i] = *key;
                     }
                     return keys;
@@ -684,7 +684,7 @@ namespace hazelcast {
                     size_t size = dataResult.size();
                     std::vector<K> keys(size);
                     for (size_t i = 0; i < size; ++i) {
-                        std::auto_ptr<K> key = toObject<K>(dataResult[i]);
+                        std::unique_ptr<K> key = toObject<K>(dataResult[i]);
                         keys[i] = *key;
                     }
                     return keys;
@@ -738,7 +738,7 @@ namespace hazelcast {
                     size_t size = dataResult.size();
                     std::vector<V> values(size);
                     for (size_t i = 0; i < size; ++i) {
-                        std::auto_ptr<V> value = toObject<V>(dataResult[i]);
+                        std::unique_ptr<V> value = toObject<V>(dataResult[i]);
                         values[i] = *value;
                     }
                     return values;
@@ -772,7 +772,7 @@ namespace hazelcast {
                     size_t size = dataResult.size();
                     std::vector<V> values(size);
                     for (size_t i = 0; i < size; ++i) {
-                        std::auto_ptr<V> value = toObject<V>(dataResult[i]);
+                        std::unique_ptr<V> value = toObject<V>(dataResult[i]);
                         values[i] = *value;
                     }
                     return values;
@@ -817,8 +817,8 @@ namespace hazelcast {
                     size_t size = dataResult.size();
                     std::vector<std::pair<K, V> > entries(size);
                     for (size_t i = 0; i < size; ++i) {
-                        std::auto_ptr<K> key = toObject<K>(dataResult[i].first);
-                        std::auto_ptr<V> value = toObject<V>(dataResult[i].second);
+                        std::unique_ptr<K> key = toObject<K>(dataResult[i].first);
+                        std::unique_ptr<V> value = toObject<V>(dataResult[i].second);
                         entries[i] = std::make_pair(*key, *value);
                     }
                     return entries;
@@ -842,8 +842,8 @@ namespace hazelcast {
                     size_t size = dataResult.size();
                     std::vector<std::pair<K, V> > entries(size);
                     for (size_t i = 0; i < size; ++i) {
-                        std::auto_ptr<K> key = toObject<K>(dataResult[i].first);
-                        std::auto_ptr<V> value = toObject<V>(dataResult[i].second);
+                        std::unique_ptr<K> key = toObject<K>(dataResult[i].first);
+                        std::unique_ptr<V> value = toObject<V>(dataResult[i].second);
                         entries[i] = std::make_pair(*key, *value);
                     }
                     return entries;
@@ -865,8 +865,8 @@ namespace hazelcast {
                     size_t size = dataResult.size();
                     std::vector<std::pair<K, V> > entries(size);
                     for (size_t i = 0; i < size; ++i) {
-                        std::auto_ptr<K> key = toObject<K>(dataResult[i].first);
-                        std::auto_ptr<V> value = toObject<V>(dataResult[i].second);
+                        std::unique_ptr<K> key = toObject<K>(dataResult[i].first);
+                        std::unique_ptr<V> value = toObject<V>(dataResult[i].second);
                         entries[i] = std::make_pair(*key, *value);
                     }
                     return entries;
@@ -973,8 +973,8 @@ namespace hazelcast {
 
                     std::map<K, boost::shared_ptr<ResultType> > result;
                     for (size_t i = 0; i < entries.size(); ++i) {
-                        std::auto_ptr<K> keyObj = toObject<K>(entries[i].first);
-                        std::auto_ptr<ResultType> resObj = toObject<ResultType>(entries[i].second);
+                        std::unique_ptr<K> keyObj = toObject<K>(entries[i].first);
+                        std::unique_ptr<ResultType> resObj = toObject<ResultType>(entries[i].second);
                         result[*keyObj] = resObj;
                     }
                     return result;
@@ -998,8 +998,8 @@ namespace hazelcast {
                     EntryVector entries = proxy::IMapImpl::executeOnEntriesData<EntryProcessor>(entryProcessor);
                     std::map<K, boost::shared_ptr<ResultType> > result;
                     for (size_t i = 0; i < entries.size(); ++i) {
-                        std::auto_ptr<K> keyObj = toObject<K>(entries[i].first);
-                        std::auto_ptr<ResultType> resObj = toObject<ResultType>(entries[i].second);
+                        std::unique_ptr<K> keyObj = toObject<K>(entries[i].first);
+                        std::unique_ptr<ResultType> resObj = toObject<ResultType>(entries[i].second);
                         result[*keyObj] = resObj;
                     }
                     return result;
@@ -1050,8 +1050,8 @@ namespace hazelcast {
                                                                                                 predicate);
                     std::map<K, boost::shared_ptr<ResultType> > result;
                     for (size_t i = 0; i < entries.size(); ++i) {
-                        std::auto_ptr<K> keyObj = toObject<K>(entries[i].first);
-                        std::auto_ptr<ResultType> resObj = toObject<ResultType>(entries[i].second);
+                        std::unique_ptr<K> keyObj = toObject<K>(entries[i].first);
+                        std::unique_ptr<ResultType> resObj = toObject<ResultType>(entries[i].second);
                         result[*keyObj] = resObj;
                     }
                     return result;
@@ -1217,7 +1217,7 @@ namespace hazelcast {
                     EntryVector allData = proxy::IMapImpl::getAllData(partitionKeys);
                     EntryVector responseEntries;
                     for (EntryVector::iterator it = allData.begin();it != allData.end(); ++it) {
-                        std::auto_ptr<V> value = toObject<V>(it->second);
+                        std::unique_ptr<V> value = toObject<V>(it->second);
                         boost::shared_ptr<serialization::pimpl::Data> keyPtr = boost::shared_ptr<serialization::pimpl::Data>(
                                 new serialization::pimpl::Data(it->first));
                         const K * &keyObject = dataKeyPairMap[keyPtr];

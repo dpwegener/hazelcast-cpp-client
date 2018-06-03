@@ -93,27 +93,27 @@ namespace hazelcast {
              * Constructor
              */
             EntryEvent(const std::string &name, const Member &member, EntryEventType eventType,
-                        std::auto_ptr<K> key, std::auto_ptr<V> value)
+                        std::unique_ptr<K> key, std::unique_ptr<V> value)
             : name(name)
             , member(member)
             , eventType(eventType)
-            , key(key)
-            , value(value) {
+            , key(std::move(key))
+            , value(std::move(value)) {
             }
 
             /**
              * Constructor
              */
             EntryEvent(const std::string &name, const Member &member, EntryEventType eventType,
-                           std::auto_ptr<K> key, std::auto_ptr<V> value,
-                            std::auto_ptr<V> oldValue, std::auto_ptr<V> mergingValue)
+                           std::unique_ptr<K> key, std::unique_ptr<V> value,
+                            std::unique_ptr<V> oldValue, std::unique_ptr<V> mergingValue)
             : name(name)
             , member(member)
             , eventType(eventType)
-            , key(key)
-            , value(value)
-            , oldValue(oldValue)
-            , mergingValue(mergingValue) {
+            , key(std::move(key))
+            , value(std::move(value))
+            , oldValue(std::move(oldValue))
+            , mergingValue(std::move(mergingValue)) {
             }
 
             /**
@@ -133,7 +133,7 @@ namespace hazelcast {
              *
              * @return the key
              */
-            std::auto_ptr<K> releaseKey() {
+            std::unique_ptr<K> releaseKey() {
                 return key;
             }
 
@@ -166,7 +166,7 @@ namespace hazelcast {
              *
              * @return The older value for the entry
              */
-            std::auto_ptr<V> releaseOldValue() {
+            std::unique_ptr<V> releaseOldValue() {
                 return oldValue;
             }
 
@@ -199,7 +199,7 @@ namespace hazelcast {
              *
              * @return The older value for the entry
              */
-            std::auto_ptr<V> releaseValue() {
+            std::unique_ptr<V> releaseValue() {
                 return value;
             }
 
@@ -232,7 +232,7 @@ namespace hazelcast {
             *
             * @return merging value
             */
-            std::auto_ptr<V> releaseMergingValue() const {
+            std::unique_ptr<V> releaseMergingValue() const {
                 return mergingValue;
             }
 
@@ -293,10 +293,10 @@ namespace hazelcast {
             std::string name;
             Member member;
             EntryEventType eventType;
-            std::auto_ptr<K> key;
-            std::auto_ptr<V> value;
-            std::auto_ptr<V> oldValue;
-            std::auto_ptr<V> mergingValue;
+            std::unique_ptr<K> key;
+            std::unique_ptr<V> value;
+            std::unique_ptr<V> oldValue;
+            std::unique_ptr<V> mergingValue;
 
         };
 

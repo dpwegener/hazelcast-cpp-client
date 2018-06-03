@@ -318,7 +318,7 @@ namespace hazelcast {
                             boost::shared_ptr<V> dataToValue(
                                     const boost::shared_ptr<serialization::pimpl::Data> &data, void *dummy) {
                                 if (data.get() != NULL) {
-                                    std::auto_ptr<V> value = serializationService.toObject<V>(data.get());
+                                    std::unique_ptr<V> value = serializationService.toObject<V>(data.get());
                                     return boost::shared_ptr<V>(value);
                                 } else {
                                     return boost::shared_ptr<V>();

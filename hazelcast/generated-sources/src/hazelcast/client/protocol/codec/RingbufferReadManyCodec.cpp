@@ -1,3 +1,5 @@
+#include <memory>
+
 /*
  * Copyright (c) 2008-2018, Hazelcast, Inc. All Rights Reserved.
  *
@@ -93,7 +95,7 @@ namespace hazelcast {
                         const RingbufferReadManyCodec::ResponseParameters &rhs) {
                     readCount = rhs.readCount;
                     items = rhs.items;
-                    itemSeqs = std::unique_ptr<std::vector<int64_t> >(new std::vector<int64_t>(*rhs.itemSeqs));
+                    itemSeqs = std::make_unique<std::vector<int64_t> >(*rhs.itemSeqs);
                     nextSeq = rhs.nextSeq;
                 }
 

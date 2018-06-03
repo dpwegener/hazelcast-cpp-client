@@ -258,15 +258,15 @@ namespace hazelcast {
                     listener->onMessage(toMessage(message));
                 }
 
-                std::auto_ptr<topic::Message<T> > toMessage(const topic::impl::reliable::ReliableTopicMessage *m) {
+                std::unique_ptr<topic::Message<T> > toMessage(const topic::impl::reliable::ReliableTopicMessage *m) {
                     boost::shared_ptr<Member> member;
                     const Address *addr = m->getPublisherAddress();
-                    if (addr != NULL) {
+                    if (addr != nullptr) {
                         member = boost::shared_ptr<Member>(new Member(*addr));
                     }
-                    std::auto_ptr<T> msg = serializationService->toObject<T>(m->getPayload());
-                    return std::auto_ptr<topic::Message<T> >(
-                            new topic::impl::MessageImpl<T>(name, msg, m->getPublishTime(), member));
+                    std::unique_ptr<T> msg = serializationService->toObject<T>(m->getPayload());
+                    return std::make_unique<topic::Message<T> >(
+                            name, msg, m->getPublishTime(), member);
                 }
 
                 bool terminate(const exception::IException &failure) {

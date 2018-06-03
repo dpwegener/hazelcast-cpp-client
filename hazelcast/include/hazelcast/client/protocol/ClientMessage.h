@@ -310,13 +310,13 @@ namespace hazelcast {
                 }
 
                 template<typename KEY, typename VALUE>
-                std::auto_ptr<std::vector<std::pair<KEY, VALUE> > > getNullableEntryArray() {
-                    std::auto_ptr<std::vector<std::pair<KEY, VALUE> > > result;
+                std::unique_ptr<std::vector<std::pair<KEY, VALUE> > > getNullableEntryArray() {
+                    std::unique_ptr<std::vector<std::pair<KEY, VALUE> > > result;
                     if (getBoolean()) {
                         return result;
                     }
 
-                    return std::auto_ptr<std::vector<std::pair<KEY, VALUE> > >(
+                    return std::unique_ptr<std::vector<std::pair<KEY, VALUE> > >(
                             new std::vector<std::pair<KEY, VALUE> >(getEntryArray<KEY, VALUE>()));
                 }
                 //----- Getter methods end --------------------------

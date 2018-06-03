@@ -1,3 +1,5 @@
+#include <memory>
+
 /*
  * Copyright (c) 2008-2018, Hazelcast, Inc. All Rights Reserved.
  *
@@ -80,7 +82,7 @@ namespace hazelcast {
 
                 TransactionalMapPutCodec::ResponseParameters::ResponseParameters(
                         const TransactionalMapPutCodec::ResponseParameters &rhs) {
-                    response = std::unique_ptr<serialization::pimpl::Data>(new serialization::pimpl::Data(*rhs.response));
+                    response = std::make_unique<serialization::pimpl::Data>(*rhs.response);
                 }
 
             }

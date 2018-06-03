@@ -38,7 +38,7 @@ namespace hazelcast {
                 template <typename E>
                 class MessageImpl : public Message<E> {
                 public:
-                    MessageImpl(std::string topicName, std::auto_ptr<E> message, int64_t publishTime,
+                    MessageImpl(std::string topicName, std::unique_ptr<E> message, int64_t publishTime,
                                 const boost::shared_ptr<Member> &member)
                             : messageObject(message)
                             , publishTime(publishTime)
@@ -52,7 +52,7 @@ namespace hazelcast {
                         return messageObject.get();
                     }
 
-                    virtual std::auto_ptr<E> releaseMessageObject() {
+                    virtual std::unique_ptr<E> releaseMessageObject() {
                         return messageObject;
                     }
 
@@ -72,7 +72,7 @@ namespace hazelcast {
                         return name;
                     }
                 private:
-                    std::auto_ptr<E> messageObject;
+                    std::unique_ptr<E> messageObject;
                     int64_t publishTime;
                     boost::shared_ptr<Member> publishingMember;
                     std::string name;

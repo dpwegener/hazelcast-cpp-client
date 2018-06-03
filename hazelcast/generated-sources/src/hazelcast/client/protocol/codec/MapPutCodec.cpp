@@ -74,7 +74,7 @@ namespace hazelcast {
                 }
 
                 MapPutCodec::ResponseParameters::ResponseParameters(const MapPutCodec::ResponseParameters &rhs) {
-                    response = std::unique_ptr<serialization::pimpl::Data>(new serialization::pimpl::Data(*rhs.response));
+                    response = std::make_unique<serialization::pimpl::Data>((*rhs.response));
                 }
 
             }

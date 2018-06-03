@@ -65,7 +65,7 @@ namespace hazelcast {
              * @return The object instance of type T.
              */
             template <typename T>
-            std::auto_ptr<T> get() const {
+            std::unique_ptr<T> get() const {
                 return ss->toObject<T>(data.get());
             }
 

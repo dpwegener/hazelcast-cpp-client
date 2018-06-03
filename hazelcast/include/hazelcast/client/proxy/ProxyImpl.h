@@ -138,14 +138,14 @@ namespace hazelcast {
                 }
 
                 template<typename T>
-                std::auto_ptr<T> toObject(const serialization::pimpl::Data &data) {
+                std::unique_ptr<T> toObject(const serialization::pimpl::Data &data) {
                     return context->getSerializationService().template toObject<T>(data);
                 }
 
                 template<typename T>
-                std::auto_ptr<T> toObject(std::unique_ptr<serialization::pimpl::Data> data) {
-                    if (NULL == data.get()) {
-                        return std::auto_ptr<T>();
+                std::unique_ptr<T> toObject(std::unique_ptr<serialization::pimpl::Data> data) {
+                    if (nullptr == data.get()) {
+                        return std::unique_ptr<T>();
                     } else {
                         return toObject<T>(*data);
                     }
@@ -156,7 +156,7 @@ namespace hazelcast {
                     size_t size = collection.size();
                     std::vector<V> objectArray(size);
                     for (size_t i = 0; i < size; i++) {
-                        std::auto_ptr<V> v = toObject<V>(collection[i]);
+                        std::unique_ptr<V> v = toObject<V>(collection[i]);
                         objectArray[i] = *v;
                     }
                     return objectArray;
@@ -181,9 +181,9 @@ namespace hazelcast {
                     size_t size = dataEntrySet.size();
                     std::vector<std::pair<K, V> > entrySet(size);
                     for (size_t i = 0; i < size; i++) {
-                        std::auto_ptr<K> key = toObject<K>(dataEntrySet[i].first);
+                        std::unique_ptr<K> key = toObject<K>(dataEntrySet[i].first);
                         entrySet[i].first = *key;
-                        std::auto_ptr<V> value = toObject<V>(dataEntrySet[i].second);
+                        std::unique_ptr<V> value = toObject<V>(dataEntrySet[i].second);
                         entrySet[i].second = *value;
                     }
                     return entrySet;

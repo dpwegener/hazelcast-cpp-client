@@ -566,7 +566,7 @@ namespace hazelcast {
                 */
                 template<typename K>
                 std::unique_ptr<EntryView<TypedData, TypedData> > getEntryView(const K &key) {
-                    std::unique_ptr<serialization::pimpl::Data> keyData(new serialization::pimpl::Data(toData(key)));
+                    std::unique_ptr<serialization::pimpl::Data> keyData(std::make_unique<serialization::pimpl::Data>(toData(key)));
                     std::unique_ptr<map::DataEntryView> dataEntryView = proxy::IMapImpl::getEntryViewData(*keyData);
                     if ((map::DataEntryView *) NULL == dataEntryView.get()) {
                         return std::unique_ptr<EntryView<TypedData, TypedData> >();
@@ -574,9 +574,8 @@ namespace hazelcast {
                     TypedData value(std::make_unique<serialization::pimpl::Data>(dataEntryView->getValue()),
                                     context->getSerializationService());
                     const TypedData &keyTypedData = TypedData(std::move(keyData), context->getSerializationService());
-                    std::unique_ptr<EntryView<TypedData, TypedData> > view(new EntryView<TypedData, TypedData>(
-                            keyTypedData, value, *dataEntryView));
-                    return view;
+                    return std::make_unique<EntryView<TypedData, TypedData> >(
+                            keyTypedData, value, *dataEntryView);
                 }
 
                 /**
@@ -904,7 +903,7 @@ namespace hazelcast {
                     std::map<K, TypedData> result;
                     serialization::pimpl::SerializationService &serializationService = getSerializationService();
                     for (size_t i = 0; i < entries.size(); ++i) {
-                        std::auto_ptr<K> keyObj = toObject<K>(entries[i].first);
+                        std::unique_ptr<K> keyObj = toObject<K>(entries[i].first);
                         result[*keyObj] = TypedData(std::make_unique<serialization::pimpl::Data>(
                                 (entries[i].second)), serializationService);
                     }
@@ -929,9 +928,9 @@ namespace hazelcast {
                     std::map<TypedData, TypedData> result;
                     for (size_t i = 0; i < entries.size(); ++i) {
                         std::unique_ptr<serialization::pimpl::Data> keyData(
-                                new serialization::pimpl::Data(entries[i].first));
+                                std::make_unique<serialization::pimpl::Data>(entries[i].first));
                         std::unique_ptr<serialization::pimpl::Data> valueData(
-                                new serialization::pimpl::Data(entries[i].second));
+                                std::make_unique<serialization::pimpl::Data>(entries[i].second));
                         serialization::pimpl::SerializationService &serializationService = context->getSerializationService();
                         result[TypedData(std::move(keyData), serializationService)] = TypedData(std::move(valueData), serializationService);
                     }
@@ -960,9 +959,9 @@ namespace hazelcast {
                     std::map<TypedData, TypedData> result;
                     for (size_t i = 0; i < entries.size(); ++i) {
                         std::unique_ptr<serialization::pimpl::Data> keyData(
-                                new serialization::pimpl::Data(entries[i].first));
+                                std::make_unique<serialization::pimpl::Data>(entries[i].first));
                         std::unique_ptr<serialization::pimpl::Data> valueData(
-                                new serialization::pimpl::Data(entries[i].second));
+                                std::make_unique<serialization::pimpl::Data>(entries[i].second));
                         serialization::pimpl::SerializationService &serializationService = context->getSerializationService();
                         result[TypedData(std::move(keyData), serializationService)] = TypedData(std::move(valueData), serializationService);
                     }

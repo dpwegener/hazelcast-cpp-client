@@ -69,7 +69,7 @@ namespace hazelcast {
 
                 MapGetEntryViewCodec::ResponseParameters::ResponseParameters(
                         const MapGetEntryViewCodec::ResponseParameters &rhs) {
-                    response = std::unique_ptr<map::DataEntryView>(new map::DataEntryView(*rhs.response));
+                    response = std::make_unique<map::DataEntryView>((*rhs.response));
                 }
 
             }

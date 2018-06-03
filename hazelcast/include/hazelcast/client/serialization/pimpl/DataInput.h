@@ -130,7 +130,7 @@ namespace hazelcast {
                             throw exception::HazelcastSerializationException("DataInput::readArray", out.str());
                         }
 
-                        std::unique_ptr<std::vector<T> > values(new std::vector<T>((size_t)len));
+                        std::unique_ptr<std::vector<T> > values(std::make_unique<std::vector<T>>((size_t)len));
                         for (int32_t i = 0; i < len; i++) {
                             (*values)[i] = read<T>();
                         }

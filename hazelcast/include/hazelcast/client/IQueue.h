@@ -161,7 +161,7 @@ namespace hazelcast {
             size_t drainTo(std::vector<E>& elements) {
                 std::vector<serialization::pimpl::Data> coll = proxy::IQueueImpl::drainToData();
                 for (std::vector<serialization::pimpl::Data>::const_iterator it = coll.begin(); it != coll.end(); ++it) {
-                    std::auto_ptr<E> e = context->getSerializationService().template toObject<E>(*it);
+                    std::unique_ptr<E> e = context->getSerializationService().template toObject<E>(*it);
                     elements.push_back(*e);
                 }
                 return coll.size();
@@ -177,7 +177,7 @@ namespace hazelcast {
             size_t drainTo(std::vector<E>& elements, size_t maxElements) {
                 std::vector<serialization::pimpl::Data> coll = proxy::IQueueImpl::drainToData(maxElements);
                 for (std::vector<serialization::pimpl::Data>::const_iterator it = coll.begin(); it != coll.end(); ++it) {
-                    std::auto_ptr<E> e = context->getSerializationService().template toObject<E>(*it);
+                    std::unique_ptr<E> e = context->getSerializationService().template toObject<E>(*it);
                     elements.push_back(*e);
                 }
                 return coll.size();

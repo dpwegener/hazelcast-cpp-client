@@ -141,8 +141,7 @@ namespace hazelcast {
                                 if (NULL == samples.get()) {
                                     return std::unique_ptr<util::Iterable<eviction::EvictionCandidate<K, V, KS, R> > >();
                                 }
-                                return std::unique_ptr<util::Iterable<eviction::EvictionCandidate<K, V, KS, R> > >(
-                                        new EvictionCandidateAdapter(samples));
+                                return std::make_unique<EvictionCandidateAdapter>(samples);
                             }
 
                             class EvictionCandidateAdapter
@@ -151,8 +150,8 @@ namespace hazelcast {
                                 EvictionCandidateAdapter(
                                         std::unique_ptr<util::Iterable<typename util::SampleableConcurrentHashMap<K, V, KS, R>::E> > &samplesIterable)
                                         : adaptedIterable(std::move(samplesIterable)) {
-                                    adaptedIterator = std::unique_ptr<util::Iterator<eviction::EvictionCandidate<K, V, KS, R> > >(
-                                            new EvictionCandidateIterator(*adaptedIterable->iterator()));
+                                    adaptedIterator = std::make_unique<EvictionCandidateIterator>(
+                                            *adaptedIterable->iterator());
                                 }
 
                                 class EvictionCandidateIterator

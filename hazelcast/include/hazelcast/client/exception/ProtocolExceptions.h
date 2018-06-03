@@ -54,7 +54,7 @@ namespace hazelcast {
                 ClassName(const std::string &source, const std::string &message, const IException &cause) \
                             : IException(#ClassName, source, message, ERROR_CODE, boost::shared_ptr<IException>(cause.clone())) {}\
                 virtual std::unique_ptr<IException> clone() const {\
-                    return std::unique_ptr<IException>(new ClassName(*this));\
+                    return std::make_unique<IException>(*this);\
                 } \
                 void raise() const { throw *this; } \
             };\
